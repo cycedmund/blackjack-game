@@ -21,20 +21,31 @@
   <h3>Shuffled Deck</h3>
   <section id="shuffled-deck-container" class="card-container"></section>
 
-  <h3>Dealer's Hand</h3>
+  <h3>Dealer's Hand (Current Count: <span id="dealer-count"></span>)</h3>
   <section id="dealer-hand-container" class="card-container">
   </section>
 
-  <h3>Player's Hand</h3>
+  <h3>Player's Hand (Current Count: <span id="player-count"></span>)</h3>
   <section id="player-hand-container" class="card-container">
   </section>
 
   <button id="hit-button">HIT</button>
   <button id="stand-button">STAND</button>
-
-
   <section id="result-container" class="card-container">
   </section>
+  <form>
+    <label>Deposit: <input type="number" id="deposit-input" placeholder="Enter your amount. Min. amount $5" min="5" /></label>
+    <label>Deposited Amount: <span id="deposit-amount"></span></label>
+    <button id="deposit-button">DEPOSIT</button>
+
+    <label>Bet: <input type="number" id="bet-input" placeholder="Enter your bet. Min. bet $5" min="5" /></label>
+    <label>Bet Amount: <span id="bet-amount"></span></label>
+    <button id="bet-button">BET</button>
+  </form>
+  
+  
+
+  
 </body>
 
 </html>

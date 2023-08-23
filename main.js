@@ -11,6 +11,10 @@ let shuffledDeck;
 let playerHand = [];
 let dealerHand = [];
 let gameOver = false;
+let depositedAmount = 0;
+let betAmount = 0;
+let playerBlackjack = false;
+
 
 /*----- cached element references -----*/
 const shuffledContainer = document.getElementById('shuffled-deck-container');
@@ -19,13 +23,53 @@ const dealerContainer = document.getElementById('dealer-hand-container');
 const resultContainer = document.getElementById('result-container');
 const hitButton = document.getElementById('hit-button');
 const standButton = document.getElementById('stand-button');
+const betButton = document.getElementById('bet-button');
+const showBetAmount = document.getElementById('bet-amount');
+const depositButton = document.getElementById('deposit-button');
+const showDepositedAmount = document.getElementById('deposit-amount');
+let playerCount = document.getElementById('player-count');
+let dealerCount = document.getElementById('dealer-count');
+showDepositedAmount.textContent = depositedAmount;
+showBetAmount.textContent = betAmount;
 
 /*----- event listeners -----*/
 document.querySelector('button').addEventListener('click', renderNewShuffledDeck);
 hitButton.addEventListener('click', hit);
 standButton.addEventListener('click', stand);
+depositButton.addEventListener('click', deposit);
+betButton.addEventListener('click', bet);
 
 /*----- functions -----*/
+function deposit(e){
+  e.preventDefault();
+  const depositInput = document.getElementById('deposit-input');
+  const depositValue = parseInt(depositInput.value);
+  if(!isNaN(depositValue) && depositValue >=5){
+    depositedAmount += depositValue;
+    showDepositedAmount.textContent = `$${depositedAmount}`;
+    depositInput.value = '';
+  } else {
+    showDepositedAmount.textContent = "Please enter a valid amount!";
+    depositInput.value = '';
+  }
+};
+
+function bet(e) {
+  e.preventDefault();
+  const betInput = document.getElementById('bet-input');
+  const betValue = parseInt(betInput.value);
+  if (!isNaN(betValue) && betValue >= 5 && betValue <= depositedAmount) {
+    betAmount += betValue;
+    showBetAmount.textContent = `$${betAmount}`;
+    betInput.value = '';
+    depositedAmount -= betValue;
+    showDepositedAmount.textContent = `$${depositedAmount}`;
+  } else {
+    showBetAmount.textContent = 'Insufficient balance!'
+    betInput.value = '';
+  }
+}
+
 function getNewShuffledDeck() {
   // Create a copy of the originalDeck (leave originalDeck untouched!)
   const tempDeck = [...originalDeck];
@@ -80,7 +124,20 @@ function buildOriginalDeck() {
   return deck;
 }
 
+function count(){
+  let totalCount = 0
+  playerHand.forEach((card) => {
+    totalCount += card.value;
+  });
+  playerCount.textContent = totalCount;
+}
+
 function hit(){
+  if (betAmount < 5){
+    resultContainer.textContent = "Please enter your bet!"
+  } else {
+  blackJack(playerHand, "Player");
+  blackJack(dealerHand, "Computer");
   let playerValue = calculateHandValue(playerHand);
   if (shuffledDeck.length > 0 && playerValue < 21) {
   const newCard = shuffledDeck.shift();
@@ -88,25 +145,27 @@ function hit(){
   renderDeckInContainer(playerHand, playerContainer);
   renderDeckInContainer(shuffledDeck, shuffledContainer);
   playerValue = calculateHandValue(playerHand);
+  count();
   if (playerValue > 21) {
       const result = "Dealer Wins"
       gameOver = true;
       displayResult(result);
-      // add in gameover
   }
   else if (playerValue === 21) {
     shuffledContainer.textContent = "Win already still hit!";
   }
-} 
-console.log(playerValue);
-  if (gameOver) {
-    if (gameOver) {
-      setTimeout(renderNewShuffledDeck, 2000);
-    }
-  }
+}
+}
+if (gameOver) { //CHANGE TO DISABLE CLICK EVENT
+  setTimeout(renderNewShuffledDeck, 2000);
+  showBetAmount.textContent = 0;
+}
 }
 
 function stand(){
+  if (betAmount < 5){
+    resultContainer.textContent = "Please enter your bet!"
+  } else {
   //determine winner
   const playerValue = calculateHandValue(playerHand);
   if (playerValue < 12) {
@@ -123,8 +182,9 @@ function stand(){
   }
   console.log(dealerValue);//test
   if (dealerValue > 21 || playerValue > dealerValue) {
-    const result = "Player Wins";
+    const result = "Player Wins!";
     gameOver = true;
+    payOut();
     displayResult(result);
   } else if (playerValue < dealerValue) {
     const result = "Dealer Wins!";
@@ -135,9 +195,11 @@ function stand(){
     gameOver = true;
     displayResult(result);
   }
-  if (gameOver) {
-    setTimeout(renderNewShuffledDeck, 2000);
-  }
+}
+if (gameOver) { //CHANGE TO DISABLE CLICK
+  setTimeout(renderNewShuffledDeck, 2000);
+  showBetAmount.textContent = 0;
+}
 }
 
 function calculateHandValue(deck) {
@@ -165,16 +227,40 @@ return handValue;
 
 function blackJack (deck, name) {
   if ((deck[0].value === 10 && deck[1].value === 11) || (deck[0].value === 11 && deck[1].value === 10)) {
-    displayResult(`${name} wins!`)
+    playerBlackjack = true;
+    payOut();
+    displayResult(`Blackjack!! ${name} Wins!`);
   }
 }
-//================== even game, wager, next game, soft/hard display values
-// deposit -> wager -> play -> actions -> checkresult -> restart
 
 function displayResult(result) {
   resultContainer.textContent = result;
 }
 
+function payOut(){
+  let wonAmount = 0
+  if (playerBlackjack === true) {
+    wonAmount = (betAmount * 3 / 2) + betAmount
+    depositedAmount += wonAmount;
+    showDepositedAmount.textContent = `$${depositedAmount}`;
+    return wonAmount;
+  } else {
+    wonAmount = betAmount * 2
+    depositedAmount += wonAmount;
+    showDepositedAmount.textContent = `$${depositedAmount}`;
+    return wonAmount;
+  }
+}
+
 
 //initialise the game
 renderNewShuffledDeck();
+
+//================== even game, wager, next game, soft/hard display values
+//================== local storage
+// deposit -> wager -> play -> hit/stand -> checkresult -> restart -> use the current deck
+//NEED TO DO
+// game logic for hit and stand -> placement of if (gameover) -> settle the count
+//show soft/hard displayer
+//use current deck
+//refine gameover function -> remove button click
