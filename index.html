@@ -1,51 +1,95 @@
 <!DOCTYPE html>
 <html>
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width" />
+    <link
+      href="css/card-library/css/cardstarter.css"
+      rel="stylesheet"
+      type="text/css"
+    />
+    <link href="css/main.css" rel="stylesheet" type="text/css" />
+    <script type="module" defer src="main.js"></script>
+    <title>Blackjack</title>
+  </head>
 
-<head>
-  <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width">
-  <link href="css/card-library/css/cardstarter.css" rel="stylesheet" type="text/css" />
-  <link href="css/main.css" rel="stylesheet" type="text/css" />
-  <script type="module" defer src="main.js"></script>
-  <title>Blackjack</title>
-</head>
-
-<body>
-  
-  <h1>Blackjack Game</h1>
-
-  <!-- <button id="shuffle-button">SHUFFLE DECK</button> -->
-  <button id="deal-button">DEAL</button>
-
-  <h3>Shuffled Deck</h3>
-  <section id="shuffled-deck-container" class="card-container"></section>
-
-  <h3>Dealer's Hand (Current Count: <span id="dealer-count"></span>)</h3>
-  <section id="dealer-hand-container" class="card-container">
-  </section>
-
-  <h3>Player's Hand (Current Count: <span id="player-count"></span>)</h3>
-  <section id="player-hand-container" class="card-container">
-  </section>
-  <!-- put type button to disable refresh -->
-  <button id="hit-button">HIT</button> 
-  <button id="stand-button">STAND</button>
-  <section id="result-container" class="card-container">
-  </section>
-  <!-- edit the form to handle both listener -->
-  <form id="form-tag">
-    <label>Deposit: <input type="number" id="deposit-input" placeholder="Enter your amount. Min. amount $5" min="5" /></label>
-    <label>Deposited Amount: <span id="deposit-amount"></span></label>
-    <button id="deposit-button" type="button">DEPOSIT</button>
-
-    <label>Bet: <input type="number" id="bet-input" placeholder="Enter your bet. Min. bet $5" min="5" /></label>
-    <label>Bet Amount: <span id="bet-amount"></span></label>
-    <button id="bet-button" type="button">BET</button>
-  </form>
-  
-  
-
-  
-</body>
-
+  <body>
+    <section id="dealer-hand-container" class="card-container"></section>
+    <h3 class="count" id="dealer-count"></h3>
+    <section id="result-container" class="result-container">
+      <h1>BLACKJACK PAYS 3 TO 2</h1>
+      <h3>Dealer must stand on a 17 and draw to 16</h3>
+    </section>
+    <section id="player-hand-container" class="card-container"></section>
+    <h3 class="count" id="player-count"></h3>
+    <!-- put type button to disable refresh -->
+    <!-- edit the form to handle both listener -->
+    <section>
+      <form id="form-tag">
+        <div class="deposit-field">
+          <label
+            >Deposit:
+            <input
+              type="number"
+              id="deposit-input"
+              placeholder="Enter your amount. Min. amount $5"
+              min="5"
+          /></label>
+          <button id="deposit-button" type="button">DEPOSIT</button>
+          <label for="deposit-input" class="deposit-amount"
+            >Bankroll: <span id="deposit-amount"></span
+          ></label>
+        </div>
+        <label class="bet-amount">Bet:<span id="bet-amount"></span></label>
+        <div class="chip-field">
+          <input
+            type="radio"
+            class="bet-input"
+            id="bet-5"
+            value="5"
+            name="bet-chip"
+          />
+          <label class="chip-label" for="bet-5"
+            ><img src="css/img/5.png" alt="$5"
+          /></label>
+          <input
+            type="radio"
+            class="bet-input"
+            id="bet-10"
+            value="10"
+            name="bet-chip"
+          />
+          <label class="chip-label" for="bet-10"
+            ><img src="css/img/10.png" alt="$10"
+          /></label>
+          <input
+            type="radio"
+            class="bet-input"
+            id="bet-25"
+            value="25"
+            name="bet-chip"
+          />
+          <label class="chip-label" for="bet-25"
+            ><img src="css/img/25.png" alt="$25"
+          /></label>
+          <input
+            type="radio"
+            class="bet-input"
+            id="bet-100"
+            value="100"
+            name="bet-chip"
+          />
+          <label class="chip-label" for="bet-100"
+            ><img src="css/img/100.png" alt="$100"
+          /></label>
+        </div>
+      </form>
+    </section>
+    <section id="shuffled-deck-container" class="deck-container"></section>
+    <div class="play-button-wrapper">
+      <button id="hit-button">HIT</button>
+      <button id="deal-button">DEAL</button>
+      <button id="stand-button">STAND</button>
+    </div>
+  </body>
 </html>

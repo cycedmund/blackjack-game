@@ -3,23 +3,72 @@
 }
 
 body {
-  background: url(img/blackjackboard.jpeg) no-repeat;
-  background-size: cover;
+  background-color: rgba(12, 124, 12, 0.844);
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
   height: 100vh;
   font-family: sans-serif;
+  margin: 0;
+  position: relative;
 }
 
+h1 {
+  font-size: 30px;
+  margin: 0 auto;
+  text-shadow: 2px 2px #9d9999;
+}
 
-.card-container {
+h3 {
+  font-size: 20px;
+  margin: 0 auto;
+  text-shadow: 2px 2px #9d9999;
+}
+
+.result-container {
   display: flex;
-  flex-wrap: wrap;
-  justify-content: flex-start;
-  border: 4px dotted grey;
+  height: 100px;
+  width: 800px;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  font-size: 60px;
+  border: none;
   padding: 10px;
 }
 
+.card-container {
+  display: flex;
+  height: 300px;
+  width: 1500px;
+  align-items: center;
+  flex-wrap: wrap;
+  justify-content: center;
+  padding: 10px;
+}
+
+.deck-container {
+  display: flex;
+  height: 300px;
+  width: 500px;
+  flex-wrap: wrap;
+  flex-direction: row-reverse;
+  justify-content: flex-start;
+  position: absolute;
+  top: 0;
+  right: 0;
+}
+
+.play-button-wrapper {
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr;
+  margin-top: 30px;
+  width: 1000px;
+}
+
 button {
-  display: block;
   margin: 10px auto;
   padding: 10px;
   font-size: 16px;
@@ -37,4 +86,43 @@ button:hover {
 input {
   height: 30px;
   width: 200px;
+}
+
+.count {
+  color: #04324b;
+	font-size: 30px;
+  text-align: center;
+  margin: 10px;
+	padding: 10px;
+	position: relative;
+	width: 200px;
+}
+
+.bet-amount {
+  display: flex;
+  justify-content: space-evenly;
+  font-size: 40px;
+}
+
+.chip-field {
+  display: flex;
+  height: 100px;
+  width: 100px;
+}
+
+.bet-input {
+  visibility: hidden;
+}
+
+.chip-label > img {
+  cursor: pointer;
+  height: 90px;
+  width: 90px;
+}
+
+.deposit-amount {
+  font-size: 50px;
+  position: absolute;
+  top: 0;
+  left: 0;
 }

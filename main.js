@@ -30,42 +30,33 @@ let gameOver = false;
 let depositedAmount = 0;
 let betAmount = 0;
 let playerBlackjack = false;
+let dealInProgress = false;
 
 /*----- cached element references -----*/
 const dealButton = document.getElementById("deal-button");
-// const shuffledContainer = document.getElementById("shuffled-deck-container");
+const shuffledContainer = document.getElementById("shuffled-deck-container");
 const playerContainer = document.getElementById("player-hand-container");
 const dealerContainer = document.getElementById("dealer-hand-container");
 const resultContainer = document.getElementById("result-container");
 const hitButton = document.getElementById("hit-button");
 const standButton = document.getElementById("stand-button");
-// const formTag = document.getElementById("form-tag");
-const betButton = document.getElementById("bet-button");
 const showBetAmount = document.getElementById("bet-amount");
 const depositButton = document.getElementById("deposit-button");
 const showDepositedAmount = document.getElementById("deposit-amount");
+const chipBet = document.querySelector(".chip-field");
 let playerCount = document.getElementById("player-count");
 let dealerCount = document.getElementById("dealer-count");
 showDepositedAmount.textContent = depositedAmount;
 showBetAmount.textContent = betAmount;
 
 /*----- event listeners -----*/
+chipBet.addEventListener("click", bet);
 dealButton.addEventListener("click", deal);
-// document
-//   .querySelector("button")
-//   // .addEventListener("click", renderNewShuffledDeck);
 hitButton.addEventListener("click", hit);
 standButton.addEventListener("click", stand);
-// formTag.addEventListener("submit", submit);
 depositButton.addEventListener("click", deposit);
-betButton.addEventListener("click", bet);
 
 /*----- functions -----*/
-// function submit(e) {
-//   e.preventDefault();
-//   deposit();
-//   bet();
-// }
 function deposit() {
   const depositInput = document.getElementById("deposit-input");
   const depositValue = parseInt(depositInput.value);
@@ -80,18 +71,20 @@ function deposit() {
   }
 }
 
-function bet() {
-  const betInput = document.getElementById("bet-input");
-  const betValue = parseInt(betInput.value);
-  if (!isNaN(betValue) && betValue >= 5 && betValue <= depositedAmount) {
-    betAmount += betValue;
-    showBetAmount.textContent = `$${betAmount}`;
-    betInput.value = "";
-    depositedAmount -= betValue;
-    showDepositedAmount.textContent = `$${depositedAmount}`;
-  } else {
-    showBetAmount.textContent = "Insufficient balance!";
-    betInput.value = "";
+function bet(e) {
+  //https://gomakethings.com/listening-for-events-on-multiple-elements-using-javascript-event-delegation
+  if (dealInProgress) {
+    return;
+  } else if (e.target.matches(".bet-input")) {
+    if (betAmount < depositedAmount) {
+      betAmount += parseInt(e.target.value);
+      //e.target.value returns a string -> console.log(typeof e.target.value)
+      showBetAmount.textContent = `$${betAmount}`;
+      depositedAmount -= betAmount;
+      showDepositedAmount.textContent = `$${depositedAmount}`;
+    } else {
+      showBetAmount.textContent = "Insufficient balance!";
+    }
   }
 }
 
@@ -113,6 +106,7 @@ function showCard(deck, container) {
   cards.forEach((div, index) => {
     if (deck[index]) {
       div.classList.remove("back-blue");
+      div.classList.add("xlarge"); //can consider removing if can stack cards
       div.classList.add(`${deck[index].face}`);
     }
   });
@@ -128,23 +122,15 @@ function renderNewShuffledDeck() {
   renderDeckInContainer(shuffledDeck, shuffledContainer);
   renderDeckInContainer(playerHand, playerContainer);
   showCard(playerHand, playerContainer);
-  // renderDeckInContainer(dealerHand, dealerContainer);
-  // showCard(dealerHand, dealerContainer);
 
-  //Reset bet amount and update values
-  // betAmount = 0;
+  // update values
   showBetAmount.textContent = `$${betAmount}`;
   showDepositedAmount.textContent = `$${depositedAmount}`;
-
-  // //Enable buttons
-  // hitButton.disabled = false;
-  // standButton.disabled = false;
 
   //Reset counts and show counts
   playerCount.textContent = "";
   dealerCount.textContent = "";
-  displayHandCount(playerHand, playerCount);
-  displayHandCount(dealerHand, dealerCount);
+  displayHandCount(playerHand, playerCount, playerContainer);
 }
 
 function renderDeckInContainer(deck, container) {
@@ -185,20 +171,12 @@ function handleGameOver() {
     //Disable hit and stand buttons (can change to show visibility?)
     hitButton.disabled = true;
     standButton.disabled = true;
-    betButton.disabled = false;
+    dealInProgress = false;
     dealButton.disabled = false;
   }
 }
 
 function hit() {
-  if (betAmount < 5) {
-    //can remove if bet amount, same for stand, right now if i put in money i bet before i deal, i will get an error
-    resultContainer.textContent = "Please enter your bet!";
-    return;
-  }
-  resultContainer.textContent = "";
-  // blackjack(playerHand, "Player");
-  // blackjack(dealerHand, "Dealer");
   let playerValue = calculateHandValue(playerHand);
   if (shuffledDeck.length > 0 && playerValue < 21) {
     const newCard = shuffledDeck.shift();
@@ -207,9 +185,11 @@ function hit() {
     renderDeckInContainer(shuffledDeck, shuffledContainer);
     showCard(playerHand, playerContainer);
     playerValue = calculateHandValue(playerHand);
-    displayHandCount(playerHand, playerCount);
-    displayHandCount(dealerHand, dealerCount);
-    if (playerValue > 21) {
+    displayHandCount(playerHand, playerCount, playerContainer);
+    displayHandCount(dealerHand, dealerCount, dealerContainer);
+    if (playerValue > 12) {
+      standButton.disabled = false;
+    } else if (playerValue > 21) {
       const result = "Dealer Wins";
       gameOver = true;
       displayResult(result);
@@ -221,20 +201,7 @@ function hit() {
 }
 
 function stand() {
-  if (betAmount < 5) {
-    resultContainer.textContent = "Please enter your bet!";
-    return;
-  }
-  resultContainer.textContent = "";
-  // showCard([dealerHand[1]], dealerContainer);
-  // blackjack(playerHand, "Player");
-  // blackjack(dealerHand, "Dealer");
-  //determine winner
   const playerValue = calculateHandValue(playerHand);
-  if (playerValue < 12) {
-    return (shuffledContainer.textContent = "eh hit la");
-  }
-
   let dealerValue = calculateHandValue(dealerHand);
   while (dealerValue < 17) {
     const newCard = shuffledDeck.shift();
@@ -244,8 +211,8 @@ function stand() {
     showCard(dealerHand, dealerContainer);
     dealerValue = calculateHandValue(dealerHand);
   }
-  displayHandCount(dealerHand, dealerCount);
-  displayHandCount(playerHand, playerCount); //my bet amount nvr reset to 0 only visually
+  displayHandCount(dealerHand, dealerCount, dealerContainer);
+  displayHandCount(playerHand, playerCount, playerContainer);
   if (dealerValue > 21 || playerValue > dealerValue) {
     showCard(dealerHand, dealerContainer);
     const result = "Player Wins!";
@@ -269,17 +236,20 @@ function stand() {
 
 // 6/16
 // Display Hand Count
-function displayHandCount(deck, count) {
+function displayHandCount(deck, count, container) {
   const handValue = calculateHandValue(deck);
   const numOfAce = deck.filter((card) => card.value === 11).length;
-  // const numOfAceIsOne = calculateHandValue(deck)[1];
 
+  const backClassCheck =
+    container.getElementsByClassName("back-blue").length > 0;
   if (
     numOfAce > 0 &&
     deck.length === 2 &&
     (deck[0].value === 10 || deck[1].value === 10)
   ) {
     count.textContent = "Blackjack!";
+  } else if (backClassCheck) {
+    count.textContent = deck[0].value;
   } else {
     count.textContent = handValue;
   }
@@ -288,78 +258,40 @@ function displayHandCount(deck, count) {
 function calculateHandValue(deck) {
   let handValue = 0;
   let numOfAce = 0;
-  // let oneAceIsEleven = false;
-  // let handValueArr = [handValue, aceValueIsOne];
   deck.forEach((card) => {
     if (card.value !== 11) {
       handValue += card.value;
     } else {
       numOfAce++;
-      // oneAceIsEleven = true;
+      handValue += 11;
     }
   });
-  // while (numOfAce > 0 && handValue + 10 <= 21) {
-  //   handValue += 10;
-  //   numOfAce--;
-  // }
-  if (numOfAce === 1) {
-    //If I have 8 9 A -> Ace must be 1
-    //If I have 9 A -> Ace can be 11
-    if (handValue + 11 <= 21) {
-      handValue += 11;
-    } else {
-      handValue += 1;
-    }
-  } else if (numOfAce === 2) {
-    //If I have 10 A A -> Ace must be 1
-    //If I have 9 A A -> 1 Ace must be 11 and the other is 1
-    //If I have A A -> 1 Ace must be 11 and the other is 1
-    if (handValue + 12 <= 21) {
-      handValue += 12;
-    } else {
-      handValue += 2;
-    }
-  } else if (numOfAce === 3) {
-    //If I have 10 A A A -> Ace must be 1
-    //If I have 9 A A A -> Ace must be 1
-    //If I have 8 A A A -> 1 Ace must be 11 and others are 1
-    //If I have A A A -> 1 Ace must be 11 and the others are 1
-    if (handValue + 13 <= 21) {
-      handValue += 13;
-    } else {
-      handValue += 3;
-    }
-  } else if (numOfAce === 4) {
-    if (handValue + 14 <= 21) {
-      handValue += 14;
-    } else {
-      handValue += 4;
-    }
+  while (numOfAce > 0 && handValue > 21) {
+    handValue -= 10;
+    numOfAce--;
   }
   return handValue;
 }
 
-function blackjack(deck, name) {
-  if (
-    (deck[0].value === 10 && deck[1].value === 11) ||
-    (deck[0].value === 11 && deck[1].value === 10)
+function blackjack() {
+  if (calculateHandValue(playerHand) === 21) {
+    playerBlackjack = true;
+    showCard(dealerHand, dealerContainer);
+    payOut();
+    displayResult(`Blackjack!! Player Wins!`);
+    handleGameOver();
+  } else if (
+    (calculateHandValue(playerHand) === 21 &&
+      calculateHandValue(dealerHand)) === 21
   ) {
-    if (deck !== dealerHand) {
-      playerBlackjack = true;
-      showCard(dealerHand, dealerContainer);
-      payOut();
-      displayResult(`Blackjack!! ${name} Wins!`);
-      handleGameOver();
-    } else if (playerHand === dealerHand) {
-      showCard(dealerHand, dealerContainer);
-      payOut();
-      displayResult(`Push!`);
-      handleGameOver();
-    } else {
-      showCard(dealerHand, dealerContainer);
-      displayResult(`Blackjack!! ${name} Wins!`);
-      handleGameOver();
-    }
+    showCard(dealerHand, dealerContainer);
+    payOut();
+    displayResult(`Push!`);
+    handleGameOver();
+  } else if (calculateHandValue(dealerHand) === 21) {
+    showCard(dealerHand, dealerContainer);
+    displayResult(`Blackjack!! Dealer Wins!`);
+    handleGameOver();
   }
 }
 
@@ -386,9 +318,16 @@ function payOut() {
 }
 
 //initialise the game
+init();
+
+//function
+function init() {
+  hitButton.disabled = true;
+  standButton.disabled = true;
+}
+
 function deal() {
   if (betAmount < 5) {
-    resultContainer.textContent = "";
     resultContainer.textContent = "Please enter your bet!";
     return;
   }
@@ -397,19 +336,21 @@ function deal() {
 
   //deal cards
   renderNewShuffledDeck();
-  betButton.disabled = true;
+  dealInProgress = true;
   dealButton.disabled = true;
 
   //show dealer first card face up
   renderDeckInContainer(dealerHand, dealerContainer);
   showCard([dealerHand[0]], dealerContainer);
+  displayHandCount(dealerHand, dealerCount, dealerContainer);
 
   //Enable buttons
   hitButton.disabled = false;
-  standButton.disabled = false;
+  if (!(calculateHandValue(playerHand) < 12)) {
+    standButton.disabled = false;
+  }
 
-  blackjack(playerHand, "Player");
-  blackjack(dealerHand, "Dealer");
+  blackjack();
 }
 
 //================== even game, wager, next game, soft/hard display values
@@ -427,6 +368,12 @@ function deal() {
 //MVC
 // when player hit 21, disable hit button
 // when player < 12 points, disable stand button
-//after deal, count of player ONLY, check if both blackjack, dealer count only one card
 //store deposit using localstorage
 //credit jim Clark
+
+// add undo button for chipbet and clear button
+
+//set time delay for dealing of cards?
+//set time dealy to remove the text from the chat box
+//stack cards
+// one card cannot display A = 11 -> logic somewhere uses deck[0] / deck[1] Ace value to determine something -> need check -> after a few rounds, it cannot calcualate -> FOUND IT -> if the dealer hand has only two cards and only require two cards to win, the value would not increase after I PRESS STAND -> it will only calculate the first value
