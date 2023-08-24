@@ -17,10 +17,11 @@ const ranks = [
 ];
 
 // Build an 'original' deck of 'card' objects used to create shuffled decks
-// renderDeckInContainer(
-//   mainDeck,
-//   document.getElementById("original-deck-container")
-// );
+const originalDeck = buildOriginalDeck();
+renderDeckInContainer(
+  originalDeck,
+  document.getElementById("original-deck-container")
+);
 
 /*----- app's state (variables) -----*/
 let shuffledDeck;
@@ -33,7 +34,7 @@ let playerBlackjack = false;
 
 /*----- cached element references -----*/
 const dealButton = document.getElementById("deal-button");
-// const shuffledContainer = document.getElementById("shuffled-deck-container");
+const shuffledContainer = document.getElementById("shuffled-deck-container");
 const playerContainer = document.getElementById("player-hand-container");
 const dealerContainer = document.getElementById("dealer-hand-container");
 const resultContainer = document.getElementById("result-container");
@@ -51,9 +52,9 @@ showBetAmount.textContent = betAmount;
 
 /*----- event listeners -----*/
 dealButton.addEventListener("click", deal);
-// document
-//   .querySelector("button")
-//   // .addEventListener("click", renderNewShuffledDeck);
+document
+  .querySelector("button")
+  .addEventListener("click", renderNewShuffledDeck);
 hitButton.addEventListener("click", hit);
 standButton.addEventListener("click", stand);
 // formTag.addEventListener("submit", submit);
@@ -96,49 +97,36 @@ function bet() {
 }
 
 function getNewShuffledDeck() {
-  const mainDeck = buildMainDeck();
-  const shuffledDeck = [];
-  while (mainDeck.length) {
+  // Create a copy of the originalDeck (leave originalDeck untouched!)
+  const tempDeck = [...originalDeck];
+  const newShuffledDeck = [];
+  while (tempDeck.length) {
     // Get a random index for a card still in the tempDeck
-    const rndIdx = Math.floor(Math.random() * mainDeck.length);
+    const rndIdx = Math.floor(Math.random() * tempDeck.length);
     // Note the [0] after splice - this is because splice always returns an array and we just want the card object in that array
-    shuffledDeck.push(mainDeck.splice(rndIdx, 1)[0]);
+    newShuffledDeck.push(tempDeck.splice(rndIdx, 1)[0]);
   }
-  return shuffledDeck;
-}
-
-function showCard(deck, container) {
-  //classlist is on the element not the "card"
-  const cards = container.querySelectorAll(".card");
-  cards.forEach((div, index) => {
-    if (deck[index]) {
-      div.classList.remove("back-blue");
-      div.classList.add(`${deck[index].face}`);
-    }
-  });
-  return cards;
+  return newShuffledDeck;
 }
 
 function renderNewShuffledDeck() {
-  // Create a copy of the mainDeck (leave mainDeck untouched!)
+  // Create a copy of the originalDeck (leave originalDeck untouched!)
   shuffledDeck = getNewShuffledDeck();
   resultContainer.textContent = "";
   playerHand = [shuffledDeck.shift(), shuffledDeck.shift()];
   dealerHand = [shuffledDeck.shift(), shuffledDeck.shift()];
   renderDeckInContainer(shuffledDeck, shuffledContainer);
   renderDeckInContainer(playerHand, playerContainer);
-  showCard(playerHand, playerContainer);
-  // renderDeckInContainer(dealerHand, dealerContainer);
-  // showCard(dealerHand, dealerContainer);
+  renderDeckInContainer(dealerHand, dealerContainer);
 
   //Reset bet amount and update values
   // betAmount = 0;
   showBetAmount.textContent = `$${betAmount}`;
   showDepositedAmount.textContent = `$${depositedAmount}`;
 
-  // //Enable buttons
-  // hitButton.disabled = false;
-  // standButton.disabled = false;
+  //Enable buttons
+  hitButton.disabled = false;
+  standButton.disabled = false;
 
   //Reset counts and show counts
   playerCount.textContent = "";
@@ -152,7 +140,7 @@ function renderDeckInContainer(deck, container) {
   // Let's build the cards as a string of HTML
   let cardsHtml = "";
   deck.forEach(function (card) {
-    cardsHtml += `<div class="card back-blue"></div>`;
+    cardsHtml += `<div class="card ${card.face}"></div>`;
   });
   // Or, use reduce to 'reduce' the array into a single thing - in this case a string of HTML markup
   // const cardsHtml = deck.reduce(function(html, card) {
@@ -161,7 +149,7 @@ function renderDeckInContainer(deck, container) {
   container.innerHTML = cardsHtml;
 }
 
-function buildMainDeck() {
+function buildOriginalDeck() {
   const deck = [];
   // Use nested forEach to generate card objects
   suits.forEach(function (suit) {
@@ -192,30 +180,29 @@ function handleGameOver() {
 
 function hit() {
   if (betAmount < 5) {
-    //can remove if bet amount, same for stand, right now if i put in money i bet before i deal, i will get an error
+    //can remove if bet amount, same for stand
     resultContainer.textContent = "Please enter your bet!";
-    return;
-  }
-  resultContainer.textContent = "";
-  // blackjack(playerHand, "Player");
-  // blackjack(dealerHand, "Dealer");
-  let playerValue = calculateHandValue(playerHand);
-  if (shuffledDeck.length > 0 && playerValue < 21) {
-    const newCard = shuffledDeck.shift();
-    playerHand.push(newCard);
-    renderDeckInContainer(playerHand, playerContainer);
-    renderDeckInContainer(shuffledDeck, shuffledContainer);
-    showCard(playerHand, playerContainer);
-    playerValue = calculateHandValue(playerHand);
-    displayHandCount(playerHand, playerCount);
-    displayHandCount(dealerHand, dealerCount);
-    if (playerValue > 21) {
-      const result = "Dealer Wins";
-      gameOver = true;
-      displayResult(result);
-      handleGameOver();
-    } else if (playerValue === 21) {
-      shuffledContainer.textContent = "Win already still hit!";
+  } else {
+    resultContainer.textContent = "";
+    blackjack(playerHand, "Player");
+    blackjack(dealerHand, "Dealer");
+    let playerValue = calculateHandValue(playerHand);
+    if (shuffledDeck.length > 0 && playerValue < 21) {
+      const newCard = shuffledDeck.shift();
+      playerHand.push(newCard);
+      renderDeckInContainer(playerHand, playerContainer);
+      renderDeckInContainer(shuffledDeck, shuffledContainer);
+      playerValue = calculateHandValue(playerHand);
+      displayHandCount(playerHand, playerCount);
+      displayHandCount(dealerHand, dealerCount);
+      if (playerValue > 21) {
+        const result = "Dealer Wins";
+        gameOver = true;
+        displayResult(result);
+        handleGameOver();
+      } else if (playerValue === 21) {
+        shuffledContainer.textContent = "Win already still hit!";
+      }
     }
   }
 }
@@ -223,48 +210,44 @@ function hit() {
 function stand() {
   if (betAmount < 5) {
     resultContainer.textContent = "Please enter your bet!";
-    return;
-  }
-  resultContainer.textContent = "";
-  // showCard([dealerHand[1]], dealerContainer);
-  // blackjack(playerHand, "Player");
-  // blackjack(dealerHand, "Dealer");
-  //determine winner
-  const playerValue = calculateHandValue(playerHand);
-  if (playerValue < 12) {
-    return (shuffledContainer.textContent = "eh hit la");
-  }
+  } else {
+    resultContainer.textContent = "";
+    blackjack(playerHand, "Player");
+    blackjack(dealerHand, "Dealer");
+    //determine winner
+    const playerValue = calculateHandValue(playerHand);
+    if (playerValue < 12) {
+      return (shuffledContainer.textContent = "eh hit la");
+    }
 
-  let dealerValue = calculateHandValue(dealerHand);
-  while (dealerValue < 17) {
-    const newCard = shuffledDeck.shift();
-    dealerHand.push(newCard);
-    renderDeckInContainer(dealerHand, dealerContainer);
-    renderDeckInContainer(shuffledDeck, shuffledContainer);
-    showCard(dealerHand, dealerContainer);
-    dealerValue = calculateHandValue(dealerHand);
+    let dealerValue = calculateHandValue(dealerHand);
+    while (dealerValue < 17) {
+      const newCard = shuffledDeck.shift();
+      dealerHand.push(newCard);
+      renderDeckInContainer(dealerHand, dealerContainer);
+      renderDeckInContainer(shuffledDeck, shuffledContainer);
+      dealerValue = calculateHandValue(dealerHand);
+    }
+    displayHandCount(dealerHand, dealerCount);
+    displayHandCount(playerHand, playerCount); //my bet amount nvr reset to 0 only visually
+    console.log(dealerValue); //test
+    if (dealerValue > 21 || playerValue > dealerValue) {
+      const result = "Player Wins!";
+      gameOver = true;
+      payOut();
+      displayResult(result);
+    } else if (playerValue < dealerValue) {
+      const result = "Dealer Wins!";
+      gameOver = true;
+      displayResult(result);
+    } else if (playerValue === dealerValue) {
+      const result = "Push!";
+      gameOver = true;
+      payOut();
+      displayResult(result);
+    }
+    handleGameOver();
   }
-  displayHandCount(dealerHand, dealerCount);
-  displayHandCount(playerHand, playerCount); //my bet amount nvr reset to 0 only visually
-  if (dealerValue > 21 || playerValue > dealerValue) {
-    showCard(dealerHand, dealerContainer);
-    const result = "Player Wins!";
-    gameOver = true;
-    payOut();
-    displayResult(result);
-  } else if (playerValue < dealerValue) {
-    showCard(dealerHand, dealerContainer);
-    const result = "Dealer Wins!";
-    gameOver = true;
-    displayResult(result);
-  } else if (playerValue === dealerValue) {
-    showCard(dealerHand, dealerContainer);
-    const result = "Push!";
-    gameOver = true;
-    payOut();
-    displayResult(result);
-  }
-  handleGameOver();
 }
 
 // 6/16
@@ -346,24 +329,15 @@ function blackjack(deck, name) {
   ) {
     if (deck !== dealerHand) {
       playerBlackjack = true;
-      showCard(dealerHand, dealerContainer);
       payOut();
       displayResult(`Blackjack!! ${name} Wins!`);
       handleGameOver();
-    } else if (playerHand === dealerHand) {
-      showCard(dealerHand, dealerContainer);
-      payOut();
-      displayResult(`Push!`);
-      handleGameOver();
     } else {
-      showCard(dealerHand, dealerContainer);
       displayResult(`Blackjack!! ${name} Wins!`);
       handleGameOver();
     }
   }
 }
-
-// after blackjack, when i press Deal it doesnt show input bets!!!
 
 function displayResult(result) {
   resultContainer.textContent = result;
@@ -388,28 +362,12 @@ function payOut() {
 //initialise the game
 function deal() {
   if (betAmount < 5) {
-    resultContainer.textContent = "";
     resultContainer.textContent = "Please enter your bet!";
     return;
   }
-  //reset blackjack
-  playerBlackjack = false;
-
-  //deal cards
   renderNewShuffledDeck();
   betButton.disabled = true;
   dealButton.disabled = true;
-
-  //show dealer first card face up
-  renderDeckInContainer(dealerHand, dealerContainer);
-  showCard([dealerHand[0]], dealerContainer);
-
-  //Enable buttons
-  hitButton.disabled = false;
-  standButton.disabled = false;
-
-  blackjack(playerHand, "Player");
-  blackjack(dealerHand, "Dealer");
 }
 
 //================== even game, wager, next game, soft/hard display values
@@ -418,15 +376,10 @@ function deal() {
 //NEED TO DO
 // game logic for hit and stand -> placement of if (gameover) -> settle the count
 //show soft/hard displayer
+//use current deck
 //refine gameover function -> remove button click
 // repeat Bet and i need double also
 // need a new game function
+// count -> not following Ace rules (done)
+// my tie is not returning me my money (done)
 // insurance??
-//immediately show black jack after deal (need to test)
-// when i put a bet amount, i shouldnt be able to press hit before i deal -> can consider disabling button OR hide button
-//MVC
-// when player hit 21, disable hit button
-// when player < 12 points, disable stand button
-//after deal, count of player ONLY, check if both blackjack, dealer count only one card
-//store deposit using localstorage
-//credit jim Clark

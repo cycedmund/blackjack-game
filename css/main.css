@@ -3,9 +3,12 @@
 }
 
 body {
+  background: url(img/blackjackboard.jpeg) no-repeat;
+  background-size: cover;
   height: 100vh;
   font-family: sans-serif;
 }
+
 
 .card-container {
   display: flex;
