@@ -15,6 +15,17 @@ const ranks = [
   "K",
   "A",
 ];
+const messages = {
+  win: "Nice 🥳",
+  lose: "Sian 😢",
+  push: "Heng ah 🤓",
+  pbj: "Hoseh 🤪",
+  dbj: "Damn Sian 😭",
+  deposit: "Please enter a valid amount",
+  bet: "Insufficient balance",
+  defaultbj: "Blackjack 2️⃣1️⃣",
+  defaultdeal: "Please place your bet",
+};
 
 // Build an 'original' deck of 'card' objects used to create shuffled decks
 // renderDeckInContainer(
@@ -23,14 +34,15 @@ const ranks = [
 // );
 
 /*----- app's state (variables) -----*/
-let shuffledDeck;
+let shuffledDeck = [];
 let playerHand = [];
 let dealerHand = [];
 let gameOver = false;
-let depositedAmount = 0;
-let betAmount = 0;
 let playerBlackjack = false;
-let dealInProgress = false;
+let dealingNow = false;
+let bankroll = 0;
+let betAmount = 0; //track total bet
+let chipAmount = 0; //track for undobet
 
 /*----- cached element references -----*/
 const dealButton = document.getElementById("deal-button");
@@ -42,12 +54,14 @@ const hitButton = document.getElementById("hit-button");
 const standButton = document.getElementById("stand-button");
 const showBetAmount = document.getElementById("bet-amount");
 const depositButton = document.getElementById("deposit-button");
-const showDepositedAmount = document.getElementById("deposit-amount");
+const showBankroll = document.getElementById("deposit-amount");
 const chipBet = document.querySelector(".chip-field");
-let playerCount = document.getElementById("player-count");
-let dealerCount = document.getElementById("dealer-count");
-showDepositedAmount.textContent = depositedAmount;
-showBetAmount.textContent = betAmount;
+const playerCount = document.getElementById("player-count");
+const dealerCount = document.getElementById("dealer-count");
+const undoButton = document.getElementById("undo-button");
+const clearButton = document.getElementById("clear-button");
+showBankroll.textContent = `$${bankroll}`;
+showBetAmount.textContent = `$${betAmount}`;
 
 /*----- event listeners -----*/
 chipBet.addEventListener("click", bet);
@@ -55,6 +69,8 @@ dealButton.addEventListener("click", deal);
 hitButton.addEventListener("click", hit);
 standButton.addEventListener("click", stand);
 depositButton.addEventListener("click", deposit);
+undoButton.addEventListener("click", undoBet);
+clearButton.addEventListener("click", clearBet);
 
 /*----- functions -----*/
 function deposit() {
@@ -62,30 +78,60 @@ function deposit() {
   const depositValue = parseInt(depositInput.value);
   //The parseInt function converts its first argument to a string, parses that string, then returns an integer or NaN . If not NaN , the return value will be the integer that is the first argument taken as a number in the specified radix
   if (!isNaN(depositValue) && depositValue >= 5) {
-    depositedAmount += depositValue;
-    showDepositedAmount.textContent = `$${depositedAmount}`;
+    updateDeposit(depositValue);
     depositInput.value = "";
   } else {
-    showDepositedAmount.textContent = "Please enter a valid amount!";
+    showBankroll.textContent = messages.deposit;
     depositInput.value = "";
+    //Reset message
+    setTimeout(() => {
+      updateDeposit(bankroll);
+    }, 1000);
   }
 }
 
 function bet(e) {
   //https://gomakethings.com/listening-for-events-on-multiple-elements-using-javascript-event-delegation
-  if (dealInProgress) {
+  if (dealingNow) {
     return;
   } else if (e.target.matches(".bet-input")) {
-    if (betAmount < depositedAmount) {
-      betAmount += parseInt(e.target.value);
-      //e.target.value returns a string -> console.log(typeof e.target.value)
-      showBetAmount.textContent = `$${betAmount}`;
-      depositedAmount -= betAmount;
-      showDepositedAmount.textContent = `$${depositedAmount}`;
+    chipAmount = parseInt(e.target.value);
+    //e.target.value returns a string -> console.log(typeof e.target.value)
+    if (chipAmount <= bankroll) {
+      enterBet(chipAmount);
     } else {
-      showBetAmount.textContent = "Insufficient balance!";
+      showBetAmount.textContent = messages.bet;
+      setTimeout(() => {
+        enterBet(betAmount);
+      }, 1000);
     }
   }
+}
+
+function enterBet(amount) {
+  betAmount += amount; //betAmount is my cumulative
+  showBetAmount.textContent = `$${betAmount}`;
+  updateDeposit(-amount);
+}
+
+function updateDeposit(amount) {
+  bankroll += amount;
+  showBankroll.textContent = `$${bankroll}`;
+}
+
+function undoBet() {
+  if (dealingNow) {
+    return;
+  } else if (betAmount > 0 && chipAmount <= betAmount) {
+    enterBet(-chipAmount);
+  }
+}
+
+function clearBet() {
+  if (dealingNow) {
+    return;
+  }
+  enterBet(-betAmount);
 }
 
 function getNewShuffledDeck() {
@@ -125,7 +171,7 @@ function renderNewShuffledDeck() {
 
   // update values
   showBetAmount.textContent = `$${betAmount}`;
-  showDepositedAmount.textContent = `$${depositedAmount}`;
+  showBankroll.textContent = `$${bankroll}`;
 
   //Reset counts and show counts
   playerCount.textContent = "";
@@ -137,7 +183,7 @@ function renderDeckInContainer(deck, container) {
   container.innerHTML = "";
   // Let's build the cards as a string of HTML
   let cardsHtml = "";
-  deck.forEach(function (card) {
+  deck.forEach(function () {
     cardsHtml += `<div class="card back-blue"></div>`;
   });
   // Or, use reduce to 'reduce' the array into a single thing - in this case a string of HTML markup
@@ -166,12 +212,10 @@ function buildMainDeck() {
 function handleGameOver() {
   if (gameOver) {
     betAmount = 0;
-    showBetAmount.textContent = 0;
     showBetAmount.textContent = `$${betAmount}`;
-    //Disable hit and stand buttons (can change to show visibility?)
     hitButton.disabled = true;
     standButton.disabled = true;
-    dealInProgress = false;
+    dealingNow = false;
     dealButton.disabled = false;
   }
 }
@@ -179,23 +223,20 @@ function handleGameOver() {
 function hit() {
   let playerValue = calculateHandValue(playerHand);
   if (shuffledDeck.length > 0 && playerValue < 21) {
-    const newCard = shuffledDeck.shift();
-    playerHand.push(newCard);
-    renderDeckInContainer(playerHand, playerContainer);
-    renderDeckInContainer(shuffledDeck, shuffledContainer);
-    showCard(playerHand, playerContainer);
+    renderHitCards(playerHand);
+    updateContainers(playerHand, playerContainer);
     playerValue = calculateHandValue(playerHand);
     displayHandCount(playerHand, playerCount, playerContainer);
-    displayHandCount(dealerHand, dealerCount, dealerContainer);
-    if (playerValue > 12) {
+
+    if (playerValue < 12) {
+      standButton.disabled = true;
+    } else if (playerValue >= 12 && playerValue < 21) {
       standButton.disabled = false;
-    } else if (playerValue > 21) {
-      const result = "Dealer Wins";
-      gameOver = true;
-      displayResult(result);
-      handleGameOver();
     } else if (playerValue === 21) {
-      shuffledContainer.textContent = "Win already still hit!";
+      stand();
+    } else if (playerValue > 21) {
+      //if more than 21
+      renderWin(messages.lose);
     }
   }
 }
@@ -204,42 +245,55 @@ function stand() {
   const playerValue = calculateHandValue(playerHand);
   let dealerValue = calculateHandValue(dealerHand);
   while (dealerValue < 17) {
-    const newCard = shuffledDeck.shift();
-    dealerHand.push(newCard);
-    renderDeckInContainer(dealerHand, dealerContainer);
-    renderDeckInContainer(shuffledDeck, shuffledContainer);
-    showCard(dealerHand, dealerContainer);
+    renderHitCards(dealerHand);
+    updateContainers(dealerHand, dealerContainer);
     dealerValue = calculateHandValue(dealerHand);
+    displayHandCount(dealerHand, dealerCount, dealerContainer);
   }
-  displayHandCount(dealerHand, dealerCount, dealerContainer);
-  displayHandCount(playerHand, playerCount, playerContainer);
   if (dealerValue > 21 || playerValue > dealerValue) {
-    showCard(dealerHand, dealerContainer);
-    const result = "Player Wins!";
-    gameOver = true;
+    renderDealerHiddenCard();
+    renderWin(messages.win);
     payOut();
-    displayResult(result);
   } else if (playerValue < dealerValue) {
-    showCard(dealerHand, dealerContainer);
-    const result = "Dealer Wins!";
-    gameOver = true;
-    displayResult(result);
+    renderDealerHiddenCard();
+    renderWin(messages.lose);
   } else if (playerValue === dealerValue) {
-    showCard(dealerHand, dealerContainer);
-    const result = "Push!";
-    gameOver = true;
+    renderDealerHiddenCard();
+    renderWin(messages.push);
     payOut();
-    displayResult(result);
   }
+}
+//small functions for hit / stand part ===============
+function updateContainers(deck, container) {
+  renderDeckInContainer(deck, container);
+  renderDeckInContainer(shuffledDeck, shuffledContainer);
+  showCard(deck, container);
+}
+
+function renderHitCards(deck) {
+  const newCard = shuffledDeck.shift();
+  deck.push(newCard);
+}
+
+function renderDealerHiddenCard() {
+  showCard(dealerHand, dealerContainer);
+  displayHandCount(dealerHand, dealerCount, dealerContainer);
+}
+//======can shorten==========
+function renderWin(message) {
+  const result = message;
+  gameOver = true;
+  displayResult(result);
   handleGameOver();
 }
 
-// 6/16
+//end of hit /stand part ===================
+
+// 6/16 //cannot use blackjack because it should be an isolated function
 // Display Hand Count
 function displayHandCount(deck, count, container) {
   const handValue = calculateHandValue(deck);
   const numOfAce = deck.filter((card) => card.value === 11).length;
-
   const backClassCheck =
     container.getElementsByClassName("back-blue").length > 0;
   if (
@@ -247,7 +301,7 @@ function displayHandCount(deck, count, container) {
     deck.length === 2 &&
     (deck[0].value === 10 || deck[1].value === 10)
   ) {
-    count.textContent = "Blackjack!";
+    count.textContent = messages.defaultbj;
   } else if (backClassCheck) {
     count.textContent = deck[0].value;
   } else {
@@ -272,26 +326,32 @@ function calculateHandValue(deck) {
   }
   return handValue;
 }
-
+// function renderPlayerWin() {
+//   const result = "Player Wins!";
+//   gameOver = true;
+//   payOut();
+//   displayResult(result);
+//   handleGameOver();
+// }
 function blackjack() {
   if (calculateHandValue(playerHand) === 21) {
     playerBlackjack = true;
-    showCard(dealerHand, dealerContainer);
+    // showCard(dealerHand, dealerContainer); dont need to show hidden card
+    displayHandCount(playerHand, playerCount, playerContainer);
     payOut();
-    displayResult(`Blackjack!! Player Wins!`);
-    handleGameOver();
+    renderWin(messages.pbj);
   } else if (
     (calculateHandValue(playerHand) === 21 &&
       calculateHandValue(dealerHand)) === 21
   ) {
-    showCard(dealerHand, dealerContainer);
+    showCard(dealerHand, dealerContainer); //display hand count required??
+    displayHandCount(dealerHand, dealerCount, dealerContainer);
     payOut();
-    displayResult(`Push!`);
-    handleGameOver();
+    renderWin(messages.push);
   } else if (calculateHandValue(dealerHand) === 21) {
     showCard(dealerHand, dealerContainer);
-    displayResult(`Blackjack!! Dealer Wins!`);
-    handleGameOver();
+    displayHandCount(dealerHand, dealerCount, dealerContainer);
+    renderWin(messages.dbj);
   }
 }
 
@@ -312,8 +372,8 @@ function payOut() {
   } else {
     wonAmount = betAmount * 2;
   }
-  depositedAmount += wonAmount;
-  showDepositedAmount.textContent = `$${depositedAmount}`;
+  bankroll += wonAmount;
+  showBankroll.textContent = `$${bankroll}`;
   return wonAmount;
 }
 
@@ -328,16 +388,17 @@ function init() {
 
 function deal() {
   if (betAmount < 5) {
-    resultContainer.textContent = "Please enter your bet!";
+    resultContainer.textContent = messages.defaultdeal;
     return;
   }
-  //reset blackjack
+  //reset state
+  gameOver = false;
   playerBlackjack = false;
 
   //deal cards
   renderNewShuffledDeck();
-  dealInProgress = true;
   dealButton.disabled = true;
+  dealingNow = true;
 
   //show dealer first card face up
   renderDeckInContainer(dealerHand, dealerContainer);
@@ -363,17 +424,16 @@ function deal() {
 // repeat Bet and i need double also
 // need a new game function
 // insurance??
-//immediately show black jack after deal (need to test)
-// when i put a bet amount, i shouldnt be able to press hit before i deal -> can consider disabling button OR hide button
+
 //MVC
-// when player hit 21, disable hit button
-// when player < 12 points, disable stand button
 //store deposit using localstorage
 //credit jim Clark
-
-// add undo button for chipbet and clear button
 
 //set time delay for dealing of cards?
 //set time dealy to remove the text from the chat box
 //stack cards
-// one card cannot display A = 11 -> logic somewhere uses deck[0] / deck[1] Ace value to determine something -> need check -> after a few rounds, it cannot calcualate -> FOUND IT -> if the dealer hand has only two cards and only require two cards to win, the value would not increase after I PRESS STAND -> it will only calculate the first value
+
+//disable input field refresh
+
+//maybe consider using calculatehandvalue as a constant
+//repeat bet
