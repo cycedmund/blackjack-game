@@ -14,84 +14,108 @@
   </head>
 
   <body>
-    <section id="dealer-hand-container" class="card-container"></section>
-    <h3 class="count" id="dealer-count"></h3>
-    <section id="result-container" class="result-container">
-      <h1>BLACKJACK PAYS 3 TO 2</h1>
-      <h3>Dealer must stand on a 17 and draw to 16</h3>
-    </section>
-    <section id="player-hand-container" class="card-container"></section>
-    <h3 class="count" id="player-count"></h3>
-    <!-- put type button to disable refresh -->
-    <!-- edit the form to handle both listener -->
-    <section>
-      <form id="form-tag">
-        <div class="deposit-field">
-          <label
-            >Deposit:
+    <main>
+      <section id="dealer-hand-container" class="card-container"></section>
+      <h3 class="count" id="dealer-count"></h3>
+      <section id="result-container" class="result-container">
+        <h1>BLACKJACK PAYS 3 TO 2</h1>
+        <h3>Dealer must stand on a 17 and draw to 16</h3>
+      </section>
+      <section id="player-hand-container" class="card-container"></section>
+      <h3 class="count" id="player-count"></h3>
+      <!-- put type button to disable refresh -->
+      <div class="play-button-wrapper">
+        <button class="button-30" id="double-button">DOUBLE</button>
+        <button class="button-30" id="hit-button">HIT</button>
+        <button class="button-30" id="stand-button">STAND</button>
+      </div>
+      <div class="bet-amount">Bet:<span id="bet-amount"></span></div>
+    </main>
+    <footer class="footer-wrapper">
+      <section>
+        <form id="form-tag">
+          <div class="deposit-field">
+            <label class="deposit-input">
+              <input
+                type="number"
+                id="deposit-input"
+                placeholder="Deposit min. amount $5"
+                step="5"
+                min="5"
+              /><button class="button-30" id="deposit-button" type="button">
+                +
+              </button></label
+            >
+            <label for="deposit-input" class="deposit-amount"
+              >Bankroll: <span id="deposit-amount"></span
+            ></label>
+          </div>
+          <!-- <label class="bet-amount">Bet:<span id="bet-amount"></span></label> -->
+          <div class="chip-field">
             <input
-              type="number"
-              id="deposit-input"
-              placeholder="Enter your amount. Min. amount $5"
-              min="5"
-          /></label>
-          <button id="deposit-button" type="button">DEPOSIT</button>
-          <label for="deposit-input" class="deposit-amount"
-            >Bankroll: <span id="deposit-amount"></span
-          ></label>
-        </div>
-        <label class="bet-amount">Bet:<span id="bet-amount"></span></label>
-        <button id="undo-button" type="button">Undo Bet</button>
-        <button id="clear-button" type="button">Clear Bet</button>
-        <div class="chip-field">
-          <input
-            type="radio"
-            class="bet-input"
-            id="bet-5"
-            value="5"
-            name="bet-chip"
-          />
-          <label class="chip-label" for="bet-5"
-            ><img src="css/img/5.png" alt="$5"
-          /></label>
-          <input
-            type="radio"
-            class="bet-input"
-            id="bet-10"
-            value="10"
-            name="bet-chip"
-          />
-          <label class="chip-label" for="bet-10"
-            ><img src="css/img/10.png" alt="$10"
-          /></label>
-          <input
-            type="radio"
-            class="bet-input"
-            id="bet-25"
-            value="25"
-            name="bet-chip"
-          />
-          <label class="chip-label" for="bet-25"
-            ><img src="css/img/25.png" alt="$25"
-          /></label>
-          <input
-            type="radio"
-            class="bet-input"
-            id="bet-100"
-            value="100"
-            name="bet-chip"
-          />
-          <label class="chip-label" for="bet-100"
-            ><img src="css/img/100.png" alt="$100"
-          /></label>
-        </div>
-      </form>
-    </section>
-    <section id="shuffled-deck-container" class="deck-container"></section>
-    <div class="play-button-wrapper">
-      <button id="hit-button">HIT</button>
-      <button id="deal-button">DEAL</button>
-      <button id="stand-button">STAND</button>
-    </div>
+              type="radio"
+              class="bet-input"
+              id="bet-5"
+              value="5"
+              name="bet-chip"
+            />
+            <label class="chip-label" for="bet-5"
+              ><img src="css/img/5.png" alt="$5"
+            /></label>
+            <input
+              type="radio"
+              class="bet-input"
+              id="bet-10"
+              value="10"
+              name="bet-chip"
+            />
+            <label class="chip-label" for="bet-10"
+              ><img src="css/img/10.png" alt="$10"
+            /></label>
+            <input
+              type="radio"
+              class="bet-input"
+              id="bet-25"
+              value="25"
+              name="bet-chip"
+            />
+            <label class="chip-label" for="bet-25"
+              ><img src="css/img/25.png" alt="$25"
+            /></label>
+            <input
+              type="radio"
+              class="bet-input"
+              id="bet-100"
+              value="100"
+              name="bet-chip"
+            />
+            <label class="chip-label" for="bet-100"
+              ><img src="css/img/100.png" alt="$100"
+            /></label>
+          </div>
+          <div class="pre-button-wrapper">
+            <button class="button-30 pre-button" id="undo-button" type="button">
+              Undo Bet
+            </button>
+            <button
+              class="button-30 pre-button"
+              id="clear-button"
+              type="button"
+            >
+              Clear Bet
+            </button>
+          </div>
+        </form>
+      </section>
+      <section id="shuffled-deck-container" class="deck-container"></section>
+      <div class="deal-button-wrapper">
+        <button class="button-30 deal-button" id="deal-button">DEAL</button>
+        <button class="button-30 deal-button" id="repeat-button" type="button">
+          Repeat Bet
+        </button>
+      </div>
+    </footer>
   </body>
 </html>
+
+<!-- https://stackoverflow.com/questions/26003148/change-the-increment-value-of-html-number-input-decimals for input step -->

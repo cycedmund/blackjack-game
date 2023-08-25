@@ -1,34 +1,59 @@
+@import url("https://fonts.googleapis.com/css2?family=Victor+Mono:wght@600&display=swap");
+
 * {
   box-sizing: border-box;
 }
 
+:root {
+  --footer-bg: rgba(114, 81, 5, 0.858);
+}
+
 body {
-  background-color: rgba(12, 124, 12, 0.844);
+  background-color: rgba(6, 95, 6, 0.844);
   display: flex;
   flex-direction: column;
   justify-content: center;
   align-items: center;
-  height: 100vh;
-  font-family: sans-serif;
-  margin: 0;
+  min-height: 100vh;
+  font-family: "Victor Mono", monospace;
+  font-weight: 600;
+  margin: 0 auto;
   position: relative;
 }
 
+main {
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+  justify-content: center;
+  text-align: center;
+  align-items: center;
+}
+
 h1 {
-  font-size: 30px;
+  font-size: 50px;
   margin: 0 auto;
-  text-shadow: 2px 2px #9d9999;
+  text-shadow: 2px 2px #726e6e;
 }
 
 h3 {
-  font-size: 20px;
+  font-size: 30px;
   margin: 0 auto;
-  text-shadow: 2px 2px #9d9999;
+  text-shadow: 2px 2px #726e6e;
+}
+
+.card-container {
+  display: flex;
+  height: 300px;
+  width: 1500px;
+  align-items: center;
+  flex-wrap: wrap;
+  justify-content: center;
 }
 
 .result-container {
   display: flex;
-  height: 100px;
+  height: 300px;
   width: 800px;
   flex-direction: column;
   align-items: center;
@@ -39,14 +64,13 @@ h3 {
   padding: 10px;
 }
 
-.card-container {
-  display: flex;
-  height: 300px;
-  width: 1500px;
-  align-items: center;
-  flex-wrap: wrap;
-  justify-content: center;
-  padding: 10px;
+.count {
+  color: #020146;
+  font-size: 50px;
+  text-align: center;
+  padding: 0 0 20px 0;
+  position: relative;
+  width: 400px;
 }
 
 .deck-container {
@@ -62,50 +86,81 @@ h3 {
 }
 
 .play-button-wrapper {
-  display: grid;
-  grid-template-columns: 1fr 1fr 1fr;
-  margin-top: 30px;
-  width: 1000px;
-}
-
-button {
-  margin: 10px auto;
-  padding: 10px;
-  font-size: 16px;
-  color: grey;
-  border: 1px solid grey;
-  border-radius: 4px;
-  outline: none;
-}
-
-button:hover {
-  background-color: grey;
-  color: white;
-}
-
-input {
-  height: 30px;
-  width: 200px;
-}
-
-.count {
-  color: #04324b;
-	font-size: 30px;
-  text-align: center;
-  margin: 10px;
-	padding: 10px;
-	position: relative;
-	width: 400px;
-}
-
-.bet-amount {
   display: flex;
+  margin-top: 30px;
+  width: 900px;
   justify-content: space-evenly;
+}
+
+.footer-wrapper {
+  display: flex;
+  flex: 0.4;
+  width: 100%;
+  background-color: var(--footer-bg);
+  border: 10px ridge black;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  padding: 0px 10px 10px 10px;
+}
+
+.desposit-input {
+  display: inline-block;
+  vertical-align: middle;
+}
+
+#deposit-input {
+  display: inline-block;
+  vertical-align: middle;
+  height: 50px;
+  width: 500px;
+  color: rgb(36, 35, 42);
+  font-size: 30px;
+  line-height: 20px;
+  min-height: 28px;
+  border-radius: 4px;
+  padding: 8px 16px;
+  border: 2px solid transparent;
+  box-shadow: rgba(45, 35, 66, 0.4) 0 2px 4px,
+    rgba(45, 35, 66, 0.3) 0 7px 13px -3px, #d6d6e7 0 -3px 0 inset;
+  box-sizing: border-box;
+  /* box-shadow: rgb(0 0 0 / 12%) 0px 1px 3px, rgb(0 0 0 / 24%) 0px 1px 2px; */
+  background: rgba(114, 81, 5, 0.31);
+  transition: all 0.1s ease 0s;
+  position: absolute;
+  left: 500px;
+  bottom: 150px;
+}
+
+#deposit-input:focus {
+  border: 2px solid rgb(124, 138, 255);
+}
+
+#deposit-button {
+  display: inline-block;
+  vertical-align: middle;
+  height: 50px;
   font-size: 40px;
+  color: white;
+  background: rgba(114, 81, 5, 0.31);
+  position: absolute;
+  left: 1000px;
+  bottom: 150px;
 }
 
 .chip-field {
   display: flex;
+  flex-direction: row;
+  justify-content: space-evenly;
+  align-items: center;
+  height: 100px;
+  padding: 0px 10px 10px 10px;
+  width: 1000px;
+  position: relative;
+}
+
+.chip-label > img {
+  cursor: pointer;
   height: 100px;
   width: 100px;
 }
@@ -114,15 +169,95 @@ input {
   visibility: hidden;
 }
 
-.chip-label > img {
-  cursor: pointer;
-  height: 90px;
-  width: 90px;
+.pre-button-wrapper {
+  display: flex;
+  width: 700px;
+  justify-content: space-around;
+  align-items: center;
+  margin: 0 auto;
+  margin-top: 30px;
+}
+
+.deal-button-wrapper {
+  display: flex;
+  width: 700px;
+  justify-content: space-around;
+  margin-top: 30px;
+  position: relative;
+  right: -70px;
+}
+
+.bet-amount {
+  font-size: 40px;
+  border: 10px outset rgba(18, 18, 18, 0.183);
+  margin: 0 auto;
+  margin-top: 80px;
+  background-color: rgba(6, 95, 6, 0.269);
 }
 
 .deposit-amount {
-  font-size: 50px;
+  font-size: 40px;
   position: absolute;
-  top: 0;
-  left: 0;
+  border: 10px inset rgba(18, 18, 18, 0.183);
+  background-color: rgba(114, 81, 5, 0.31);
+  left: 500px;
+  bottom: 50px;
 }
+
+/* CSS : https://getcssscan.com/css-buttons-examples */
+.button-30 {
+  align-items: center;
+  appearance: none;
+  background-color: #fcfcfd;
+  border-radius: 4px;
+  border-width: 0;
+  box-shadow: rgba(45, 35, 66, 0.4) 0 2px 4px,
+    rgba(45, 35, 66, 0.3) 0 7px 13px -3px, #d6d6e7 0 -3px 0 inset;
+  box-sizing: border-box;
+  color: #36395a;
+  cursor: pointer;
+  display: inline-flex;
+  font-family: "Victor Mono", monospace;
+  height: 48px;
+  justify-content: center;
+  line-height: 1;
+  list-style: none;
+  overflow: hidden;
+  padding-left: 16px;
+  padding-right: 16px;
+  position: relative;
+  text-align: left;
+  text-decoration: none;
+  transition: box-shadow 0.15s, transform 0.15s;
+  user-select: none;
+  -webkit-user-select: none;
+  touch-action: manipulation;
+  white-space: nowrap;
+  will-change: box-shadow, transform;
+  font-size: 28px;
+}
+
+.button-30:focus {
+  box-shadow: #d6d6e7 0 0 0 1.5px inset, rgba(45, 35, 66, 0.4) 0 2px 4px,
+    rgba(45, 35, 66, 0.3) 0 7px 13px -3px, #d6d6e7 0 -3px 0 inset;
+}
+
+.button-30:hover {
+  box-shadow: rgba(45, 35, 66, 0.4) 0 4px 8px,
+    rgba(45, 35, 66, 0.3) 0 7px 13px -3px, #d6d6e7 0 -3px 0 inset;
+  transform: translateY(-2px);
+}
+
+.button-30:active {
+  box-shadow: #d6d6e7 0 3px 7px inset;
+  transform: translateY(2px);
+}
+
+.button-30:disabled {
+  background-color: #85858b;
+  color: #a1a1b1;
+  box-shadow: #d6d6e7 0 3px 7px inset;
+  transform: translateY(2px);
+}
+
+/* https://copy-paste-css.com/form-input-text */
