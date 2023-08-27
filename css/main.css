@@ -5,7 +5,7 @@
 }
 
 :root {
-  --footer-bg: rgba(114, 81, 5, 0.858);
+  --footer-bg: rgba(129, 92, 4, 0.846);
 }
 
 body {
@@ -51,9 +51,9 @@ h3 {
   justify-content: center;
 }
 
-.result-container {
+.main-container {
   display: flex;
-  height: 300px;
+  height: 320px;
   width: 800px;
   flex-direction: column;
   align-items: center;
@@ -62,13 +62,14 @@ h3 {
   font-size: 60px;
   border: none;
   padding: 10px;
+  margin: 10px;
 }
 
 .count {
   color: #020146;
-  font-size: 50px;
+  font-size: 40px;
   text-align: center;
-  padding: 0 0 20px 0;
+  padding: 0;
   position: relative;
   width: 400px;
 }
@@ -81,13 +82,13 @@ h3 {
   flex-direction: row-reverse;
   justify-content: flex-start;
   position: absolute;
-  top: 0;
+  top: 450px;
   right: 0;
 }
 
 .play-button-wrapper {
   display: flex;
-  margin-top: 30px;
+  margin: 20px;
   width: 900px;
   justify-content: space-evenly;
 }
@@ -101,7 +102,8 @@ h3 {
   flex-direction: column;
   justify-content: center;
   align-items: center;
-  padding: 0px 10px 10px 10px;
+  margin-top: 10px;
+  padding: 10px;
 }
 
 .desposit-input {
@@ -125,11 +127,11 @@ h3 {
     rgba(45, 35, 66, 0.3) 0 7px 13px -3px, #d6d6e7 0 -3px 0 inset;
   box-sizing: border-box;
   /* box-shadow: rgb(0 0 0 / 12%) 0px 1px 3px, rgb(0 0 0 / 24%) 0px 1px 2px; */
-  background: rgba(114, 81, 5, 0.31);
+  background: rgba(215, 234, 221, 0.557);
   transition: all 0.1s ease 0s;
   position: absolute;
-  left: 500px;
-  bottom: 150px;
+  left: 10px;
+  bottom: 100px;
 }
 
 #deposit-input:focus {
@@ -142,10 +144,10 @@ h3 {
   height: 50px;
   font-size: 40px;
   color: white;
-  background: rgba(114, 81, 5, 0.31);
+  background: rgba(215, 234, 221, 0.557);
   position: absolute;
-  left: 1000px;
-  bottom: 150px;
+  left: 510px;
+  bottom: 100px;
 }
 
 .chip-field {
@@ -154,9 +156,10 @@ h3 {
   justify-content: space-evenly;
   align-items: center;
   height: 100px;
-  padding: 0px 10px 10px 10px;
+  padding: 15px 10px 10px 10px;
   width: 1000px;
   position: relative;
+  right: 40px;
 }
 
 .chip-label > img {
@@ -184,24 +187,32 @@ h3 {
   justify-content: space-around;
   margin-top: 30px;
   position: relative;
-  right: -70px;
 }
 
 .bet-amount {
-  font-size: 40px;
-  border: 10px outset rgba(18, 18, 18, 0.183);
-  margin: 0 auto;
-  margin-top: 80px;
-  background-color: rgba(6, 95, 6, 0.269);
+  display: flex;
+  font-size: 25px;
+  height: 120px;
+  width: 120px;
+  border: 15px dashed rgb(196, 196, 7);
+  outline-color: black;
+  outline-style: solid;
+  outline-width: 5px;
+  border-radius: 50%;
+  background-color: rgba(255, 255, 255, 0.448);
+  margin: 15px;
+  justify-content: center;
+  align-items: center;
 }
 
-.deposit-amount {
-  font-size: 40px;
+.bankroll-amount {
+  font-size: 50px;
   position: absolute;
-  border: 10px inset rgba(18, 18, 18, 0.183);
-  background-color: rgba(114, 81, 5, 0.31);
-  left: 500px;
-  bottom: 50px;
+  border: 10px ridge rgba(18, 18, 18, 0.183);
+  background-color: rgba(29, 35, 31, 0.557);
+  color: white;
+  left: 10px;
+  bottom: 10px;
 }
 
 /* CSS : https://getcssscan.com/css-buttons-examples */

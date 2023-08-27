@@ -17,9 +17,10 @@
     <main>
       <section id="dealer-hand-container" class="card-container"></section>
       <h3 class="count" id="dealer-count"></h3>
-      <section id="result-container" class="result-container">
+      <section id="main-container" class="main-container">
         <h1>BLACKJACK PAYS 3 TO 2</h1>
         <h3>Dealer must stand on a 17 and draw to 16</h3>
+        <h1 id="result-message" class="result-message"></h1>
       </section>
       <section id="player-hand-container" class="card-container"></section>
       <h3 class="count" id="player-count"></h3>
@@ -29,29 +30,29 @@
         <button class="button-30" id="hit-button">HIT</button>
         <button class="button-30" id="stand-button">STAND</button>
       </div>
-      <div class="bet-amount">Bet:<span id="bet-amount"></span></div>
+      <section class="bet-amount" id="bet-amount"></section>
     </main>
     <footer class="footer-wrapper">
       <section>
         <form id="form-tag">
           <div class="deposit-field">
-            <label class="deposit-input">
+            <label for="deposit-input" class="deposit-input">
               <input
                 type="number"
                 id="deposit-input"
-                placeholder="Deposit min. amount $5"
+                placeholder="Please enter amount (min. $5)"
                 step="5"
                 min="5"
               /><button class="button-30" id="deposit-button" type="button">
                 +
               </button></label
             >
-            <label for="deposit-input" class="deposit-amount"
-              >Bankroll: <span id="deposit-amount"></span
+            <label class="bankroll-amount"
+              >Bankroll: <span id="bankroll-amount"></span
             ></label>
           </div>
           <!-- <label class="bet-amount">Bet:<span id="bet-amount"></span></label> -->
-          <div class="chip-field">
+          <div class="chip-field" id="chip-field">
             <input
               type="radio"
               class="bet-input"
@@ -98,6 +99,13 @@
               Undo Bet
             </button>
             <button
+              class="button-30 deal-button"
+              id="repeat-button"
+              type="button"
+            >
+              Repeat Bet
+            </button>
+            <button
               class="button-30 pre-button"
               id="clear-button"
               type="button"
@@ -110,9 +118,6 @@
       <section id="shuffled-deck-container" class="deck-container"></section>
       <div class="deal-button-wrapper">
         <button class="button-30 deal-button" id="deal-button">DEAL</button>
-        <button class="button-30 deal-button" id="repeat-button" type="button">
-          Repeat Bet
-        </button>
       </div>
     </footer>
   </body>
