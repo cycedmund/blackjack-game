@@ -288,7 +288,7 @@ function putCardsIntoContainer(deck, container) {
   // Let's build the cards as a string of HTML
   let cardsHtml = "";
   deck.forEach(function () {
-    cardsHtml += `<div class="card back-blue xlarge"></div>`; //can consider map
+    cardsHtml += `<div class="card back-blue large"></div>`; //can consider map
   });
   // Or, use reduce to 'reduce' the array into a single thing - in this case a string of HTML markup
   // const cardsHtml = deck.reduce(function(html, card) {
@@ -407,23 +407,6 @@ function renderResultsMessage(message) {
   handleGameOver();
 }
 
-function renderHandCount(hand, count, container) {
-  const handValue = calculateHandValue(hand);
-  const numOfAce = hand.filter((card) => card.value === 11).length;
-  const checkIfBackClass = container.querySelectorAll(".back-blue").length > 0;
-  if (
-    numOfAce > 0 &&
-    hand.length === 2 &&
-    (hand[0].value === 10 || hand[1].value === 10)
-  ) {
-    count.textContent = messages.defaultbj;
-  } else if (checkIfBackClass) {
-    count.textContent = hand[0].value;
-  } else {
-    count.textContent = handValue;
-  }
-}
-
 function calculateHandValue(hand) {
   let handValue = 0;
   let numOfAce = 0;
@@ -440,6 +423,28 @@ function calculateHandValue(hand) {
     numOfAce--;
   }
   return handValue;
+}
+
+function renderHandCount(hand, count, container) {
+  const handValue = calculateHandValue(hand);
+  const numOfAce = hand.filter((card) => card.value === 11).length;
+  const checkIfBackClass = container.querySelectorAll(".back-blue").length > 0;
+  if (
+    numOfAce > 0 &&
+    hand.length === 2 &&
+    (hand[0].value === 10 || hand[1].value === 10)
+  ) {
+    count.textContent = messages.defaultbj;
+  } else if (checkIfBackClass) {
+    count.textContent = hand[0].value;
+  } else {
+    count.textContent = handValue;
+  }
+
+  //solve the softvalue count
+  // else if (numOfAce === 1) {
+  //   count.textContent = `${handValue - 10} / ${handValue}`;
+  // }
 }
 
 function blackjackCheck() {

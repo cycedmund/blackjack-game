@@ -31,21 +31,22 @@ main {
 }
 
 h1 {
-  font-size: 50px;
+  font-size: 40px;
   margin: 0 auto;
   text-shadow: 2px 2px #726e6e;
 }
 
 h3 {
-  font-size: 30px;
+  font-size: 20px;
   margin: 0 auto;
   text-shadow: 2px 2px #726e6e;
 }
 
 .card-container {
   display: flex;
-  height: 300px;
-  width: 1500px;
+  height: 150px;
+  width: 800px;
+  margin: 10px;
   align-items: center;
   flex-wrap: wrap;
   justify-content: center;
@@ -53,21 +54,21 @@ h3 {
 
 .main-container {
   display: flex;
-  height: 320px;
+  height: 170px;
   width: 800px;
   flex-direction: column;
   align-items: center;
   justify-content: center;
   text-align: center;
-  font-size: 60px;
+  font-size: 30px;
   border: none;
-  padding: 10px;
-  margin: 10px;
+  padding: 7px;
+  margin: 7px;
 }
 
 .count {
   color: #020146;
-  font-size: 40px;
+  font-size: 22px;
   text-align: center;
   padding: 0;
   position: relative;
@@ -76,14 +77,14 @@ h3 {
 
 .deck-container {
   display: flex;
-  height: 300px;
+  height: 200px;
   width: 500px;
   flex-wrap: wrap;
   flex-direction: row-reverse;
   justify-content: flex-start;
   position: absolute;
-  top: 450px;
-  right: 0;
+  top: 250px;
+  right: -100px;
 }
 
 .play-button-wrapper {
@@ -95,7 +96,8 @@ h3 {
 
 .footer-wrapper {
   display: flex;
-  flex: 0.4;
+  flex: 0;
+  height: 250px;
   width: 100%;
   background-color: var(--footer-bg);
   border: 10px ridge black;
@@ -114,10 +116,10 @@ h3 {
 #deposit-input {
   display: inline-block;
   vertical-align: middle;
-  height: 50px;
-  width: 500px;
+  height: 40px;
+  width: 400px;
   color: rgb(36, 35, 42);
-  font-size: 30px;
+  font-size: 20px;
   line-height: 20px;
   min-height: 28px;
   border-radius: 4px;
@@ -131,7 +133,7 @@ h3 {
   transition: all 0.1s ease 0s;
   position: absolute;
   left: 10px;
-  bottom: 100px;
+  bottom: 70px;
 }
 
 #deposit-input:focus {
@@ -141,13 +143,13 @@ h3 {
 #deposit-button {
   display: inline-block;
   vertical-align: middle;
-  height: 50px;
-  font-size: 40px;
+  height: 40px;
+  font-size: 20px;
   color: white;
   background: rgba(215, 234, 221, 0.557);
   position: absolute;
-  left: 510px;
-  bottom: 100px;
+  left: 410px;
+  bottom: 70px;
 }
 
 .chip-field {
@@ -155,8 +157,8 @@ h3 {
   flex-direction: row;
   justify-content: space-evenly;
   align-items: center;
-  height: 100px;
-  padding: 15px 10px 10px 10px;
+  height: 80px;
+  padding: 10px 10px 10px 10px;
   width: 1000px;
   position: relative;
   right: 40px;
@@ -164,8 +166,8 @@ h3 {
 
 .chip-label > img {
   cursor: pointer;
-  height: 100px;
-  width: 100px;
+  height: 80px;
+  width: 80px;
 }
 
 .bet-input {
@@ -185,34 +187,34 @@ h3 {
   display: flex;
   width: 700px;
   justify-content: space-around;
-  margin-top: 30px;
+  margin-top: 20px;
   position: relative;
 }
 
 .bet-amount {
   display: flex;
-  font-size: 25px;
-  height: 120px;
-  width: 120px;
-  border: 15px dashed rgb(196, 196, 7);
+  font-size: 18px;
+  height: 70px;
+  width: 70px;
+  border: 8px dashed rgb(196, 196, 7);
   outline-color: black;
   outline-style: solid;
   outline-width: 5px;
   border-radius: 50%;
   background-color: rgba(255, 255, 255, 0.448);
-  margin: 15px;
+  margin: 7px;
   justify-content: center;
   align-items: center;
 }
 
 .bankroll-amount {
-  font-size: 50px;
+  font-size: 35px;
   position: absolute;
   border: 10px ridge rgba(18, 18, 18, 0.183);
   background-color: rgba(29, 35, 31, 0.557);
   color: white;
   left: 10px;
-  bottom: 10px;
+  bottom: 0px;
 }
 
 /* CSS : https://getcssscan.com/css-buttons-examples */
@@ -229,7 +231,7 @@ h3 {
   cursor: pointer;
   display: inline-flex;
   font-family: "Victor Mono", monospace;
-  height: 48px;
+  height: 32px;
   justify-content: center;
   line-height: 1;
   list-style: none;
@@ -245,7 +247,7 @@ h3 {
   touch-action: manipulation;
   white-space: nowrap;
   will-change: box-shadow, transform;
-  font-size: 28px;
+  font-size: 20px;
 }
 
 .button-30:focus {
