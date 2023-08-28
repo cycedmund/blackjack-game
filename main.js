@@ -66,7 +66,7 @@ const playerContainer = document.getElementById("player-hand-container");
 const playerCount = document.getElementById("player-count");
 const resultMessageEl = document.querySelector(".result-message");
 
-// const showDblBet = document.getElementById("dblbet-amount");
+const showDblBet = document.getElementById("dblbet-amount");
 
 /*----- event listeners -----*/
 chipBet.addEventListener("click", bet);
@@ -101,13 +101,14 @@ function init() {
 
   // Hide bet amount
   showBetAmount.style.visibility = "hidden";
-  // showDblBet.style.display = "none";
+  showDblBet.style.display = "none";
 
   // hide and disable in-game buttons
   hideInGameButtons();
 
   // show pre-game buttons
-  renderPreGameButtons(false, "visible");
+  // renderPreGameButtons(false, "visible");
+  renderPreGameButtons(false, "flex");
 }
 
 function deal() {
@@ -117,7 +118,7 @@ function deal() {
   }
 
   // Hide pre-game buttons
-  renderPreGameButtons(true, "hidden");
+  renderPreGameButtons(true, "none");
 
   // Hide deposit box
   hideDepositField("hidden");
@@ -359,8 +360,8 @@ function double() {
   playerValue = calculateHandValue(playerHand);
   if (playerHand.length === 2 && playerValue < 21) {
     //if double, dont need minimum of 12
-    enterBet(betAmount);
-    // doubleBet();
+    // enterBet(betAmount);
+    doubleBet();
     renderPlayerHitCards();
     doubleButton.disabled = true;
 
@@ -531,18 +532,27 @@ function hideInGameButtons() {
   doubleButton.style.visibility = "hidden";
 }
 
+// function renderPreGameButtons(bool, str) {
+//   dealButton.disabled = bool;
+//   undoButton.style.visibility = str;
+//   clearButton.style.visibility = str;
+//   dealButton.style.visibility = str;
+//   repeatButton.style.visibility = str;
+//   hideChips(str);
+// }
+
 function renderPreGameButtons(bool, str) {
   dealButton.disabled = bool;
-  undoButton.style.visibility = str;
-  clearButton.style.visibility = str;
-  dealButton.style.visibility = str;
-  repeatButton.style.visibility = str;
+  undoButton.style.display = str;
+  clearButton.style.display = str;
+  dealButton.style.display = str;
+  repeatButton.style.display = str;
   hideChips(str);
 }
 
 function hideChips(str) {
   const chipEl = document.querySelector(".chip-field");
-  chipEl.style.visibility = str;
+  chipEl.style.display = str;
 }
 
 function clearPage() {
@@ -576,22 +586,24 @@ function addClassToShuffledDeck() {
   });
 }
 
-//to show visual of double
+// to show visual of double
 
-// function doubleBet() {
-//   showDblBet.textContent = `$${betAmount}`;
-//   renderDblBetAmount();
-//   renderBankroll(-betAmount);
-// }
+function doubleBet() {
+  betAmount = betAmount * 2;
+  const singleBetAmount = betAmount / 2;
+  showDblBet.textContent = `$${singleBetAmount}`;
+  renderDblBetAmount(singleBetAmount);
+  renderBankroll(-singleBetAmount);
+}
 
-// function renderDblBetAmount() {
-//   if (betAmount === 0) {
-//     showDblBet.style.display = "none";
-//   } else {
-//     showDblBet.style.display = "flex";
-//     showDblBet.textContent = `$${betAmount}`;
-//   }
-// }
+function renderDblBetAmount(amount) {
+  if (betAmount === 0) {
+    showDblBet.style.display = "none";
+  } else {
+    showDblBet.style.display = "flex";
+    showDblBet.textContent = `$${amount}`;
+  }
+}
 
 //================== even game, wager, next game, soft/hard display values
 //================== local storage
@@ -629,7 +641,7 @@ function addClassToShuffledDeck() {
 //can use function expression for playervalue etc where i need the value
 
 //bugs
-//1. repeat bet -> cannot press undo/clear else repeat bet cannot work
+//1. repeat bet -> cannot press undo/clear else repeat bet cannot work (solved)
 //2. print error message -> can keep printing if keep spamming
 //3. prevent deposit input from refreshing when pressing enter
 //4. include soft and hard count
