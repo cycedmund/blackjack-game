@@ -22,7 +22,7 @@ const messages = {
   pbj: "Swee 🤪 You won $",
   dbj: "Damn Sian 😭",
   invalid: "Invalid amount! Try again!",
-  insufficient: "Insufficient bankroll! Please top up!",
+  insufficient: "Invalid bet amount!",
   defaultbj: "Blackjack 2️⃣1️⃣",
   defaultdeal: "Please place your bet.",
 };
@@ -64,7 +64,9 @@ const dealerCount = document.getElementById("dealer-count");
 const mainContainer = document.getElementById("main-container");
 const playerContainer = document.getElementById("player-hand-container");
 const playerCount = document.getElementById("player-count");
-const resultMessageEl = document.querySelector(".result-message"); //use result to show invalid messages instead
+const resultMessageEl = document.querySelector(".result-message");
+
+// const showDblBet = document.getElementById("dblbet-amount");
 
 /*----- event listeners -----*/
 chipBet.addEventListener("click", bet);
@@ -77,12 +79,12 @@ hitButton.addEventListener("click", hit);
 standButton.addEventListener("click", stand);
 doubleButton.addEventListener("click", double);
 
-// Initialise the game
+// Initialise/Start the game
 init();
 
 /*----- main functions -----*/
 function init() {
-  // Initialise game state variables
+  // Initial game state variables
   gameOver = false;
   playerHand = [];
   dealerHand = [];
@@ -99,6 +101,7 @@ function init() {
 
   // Hide bet amount
   showBetAmount.style.visibility = "hidden";
+  // showDblBet.style.display = "none";
 
   // hide and disable in-game buttons
   hideInGameButtons();
@@ -202,6 +205,13 @@ function repeatBet() {
   }
 }
 //==========other functions for bet==========
+function enterBet(amount) {
+  betAmount += amount; //betAmount is my cumulative
+  repeatBetAmount = betAmount; //can fix the rebet BUT when clear // undo i cannot press again because it assumes the chipamount
+  renderBetAmount();
+  renderBankroll(-amount);
+}
+
 function renderInvalidBetMessage() {
   printErrorMessage(messages.insufficient);
 }
@@ -213,13 +223,6 @@ function renderBetAmount() {
     showBetAmount.style.visibility = "visible";
     showBetAmount.textContent = `$${betAmount}`;
   }
-}
-
-function enterBet(amount) {
-  betAmount += amount; //betAmount is my cumulative
-  repeatBetAmount = betAmount; //can fix the rebet BUT when clear // undo i cannot press again because it assumes the chipamount
-  renderBetAmount();
-  renderBankroll(-amount);
 }
 
 function printErrorMessage(message) {
@@ -357,7 +360,9 @@ function double() {
   if (playerHand.length === 2 && playerValue < 21) {
     //if double, dont need minimum of 12
     enterBet(betAmount);
+    // doubleBet();
     renderPlayerHitCards();
+    doubleButton.disabled = true;
 
     if (playerValue <= 21) {
       setTimeout(stand, 800);
@@ -499,8 +504,8 @@ function payOut() {
 function handleGameOver() {
   if (gameOver) {
     hideInGameButtons();
-    setTimeout(clearPage, 5000);
-    setTimeout(init, 5000);
+    setTimeout(clearPage, 4000);
+    setTimeout(init, 4000);
   }
 }
 
@@ -549,7 +554,7 @@ function clearPage() {
   removeResultMessage();
 }
 
-//TESTING~~~~~~~~~~~~~~~~~~~
+//Test local storage~~~~~~~~~~~~~~~~~~~
 // function saveBankroll() {
 //   localStorage.setItem("bankroll", bankroll);
 // }
@@ -562,12 +567,31 @@ function clearPage() {
 //   }
 // }
 
+// to show visual of stacked
+
 function addClassToShuffledDeck() {
   const cards = shuffledContainer.querySelectorAll(".card");
   cards.forEach((div) => {
     div.classList.add("stack");
   });
 }
+
+//to show visual of double
+
+// function doubleBet() {
+//   showDblBet.textContent = `$${betAmount}`;
+//   renderDblBetAmount();
+//   renderBankroll(-betAmount);
+// }
+
+// function renderDblBetAmount() {
+//   if (betAmount === 0) {
+//     showDblBet.style.display = "none";
+//   } else {
+//     showDblBet.style.display = "flex";
+//     showDblBet.textContent = `$${betAmount}`;
+//   }
+// }
 
 //================== even game, wager, next game, soft/hard display values
 //================== local storage
@@ -600,10 +624,12 @@ function addClassToShuffledDeck() {
 //set timer to bet?
 //dont use multiple of 5? because like that 5 will get 0.5..
 
-//add stack cards
+// show chip icon for double
 
 //can use function expression for playervalue etc where i need the value
 
 //bugs
 //1. repeat bet -> cannot press undo/clear else repeat bet cannot work
 //2. print error message -> can keep printing if keep spamming
+//3. prevent deposit input from refreshing when pressing enter
+//4. include soft and hard count

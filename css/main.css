@@ -5,7 +5,7 @@
 }
 
 :root {
-  --footer-bg: rgba(129, 92, 4, 0.846);
+  --footer-bg: rgba(46, 24, 10, 0.914);
 }
 
 body {
@@ -78,13 +78,13 @@ h3 {
 .deck-container {
   display: flex;
   height: 200px;
-  width: 500px;
+  width: 200px;
   flex-wrap: wrap;
   flex-direction: row-reverse;
   justify-content: flex-start;
   position: absolute;
   top: 250px;
-  right: -100px;
+  right: 150px;
 }
 
 .play-button-wrapper {
