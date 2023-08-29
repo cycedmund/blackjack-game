@@ -25,7 +25,7 @@ const messages = {
   dbj: "Damn Sian 😭",
   invalid: "Put number la! $5 - $1000 take your pick.",
   insufficient: "Oi! No money still want bet so big!",
-  defaultbj: "Blackjack 2️⃣1️⃣",
+  defaultbj: "BLACKJACK 2️⃣1️⃣",
   defaultdeal: "Eh bro and sis, place bet leh!",
 };
 
@@ -94,7 +94,7 @@ function init() {
   initialiseGameStates();
   getBankrollFromLocalStorage();
   displayDepositField("visible");
-  displayBetAmt("hidden", "none");
+  displayBetChipUI("hidden", "none");
   hideInGameButtons();
   displayPreGameBtns(false, "flex");
 }
@@ -103,7 +103,7 @@ function init() {
 function deposit() {
   const depositValue = parseInt(depositEl.input.value);
   if (!isNaN(depositValue) && depositValue >= 5 && depositValue <= 1000) {
-    renderBankroll(depositValue);
+    displayBankroll(depositValue);
     depositEl.input.value = "";
   } else {
     depositEl.input.value = "";
@@ -122,7 +122,6 @@ function bet(e) {
   //https://gomakethings.com/listening-for-events-on-multiple-elements-using-javascript-event-delegation
   if (e.target.matches(".bet-input")) {
     stakes.chipAmt = parseInt(e.target.value);
-    //e.target.value returns a string -> console.log(typeof e.target.value)
     if (stakes.chipAmt <= stakes.bankroll) {
       inputBet(stakes.chipAmt);
     } else {
@@ -164,9 +163,9 @@ function deal() {
   stakes.initialBetAmt = stakes.betAmt;
   displayPreGameBtns(true, "none");
   displayDepositField("hidden");
-  renderPlayerHand();
+  displayPlayerHand();
   // dealBlackjack(carddeck.player, stateEl.playerCount, deckEl.player);
-  renderHalfDealerHand();
+  displayDealerFirstCard();
   // dealBlackjack(carddeck.dealer, stateEl.dealerCount, deckEl.dealer);
   displayInGameBtns();
   displayBlackjack();
@@ -175,14 +174,14 @@ function deal() {
 function hit() {
   gameEl.double.disabled = true;
   handvalue.player = calculateHandValue(carddeck.player);
-  if (carddeck.shoe.length > 0 && handvalue.player.hard < 21) {
-    renderPlayerHitCards();
+  if (handvalue.player.hard < 21) {
+    displayPlayerHitCards();
     if (handvalue.player.hard >= 12 && handvalue.player.hard < 21) {
       gameEl.stand.disabled = false;
     } else if (handvalue.player.hard === 21) {
       stand();
     } else if (handvalue.player.hard > 21) {
-      renderResultsMessage(messages.lose);
+      displayResultsMessage(messages.lose);
     }
   }
 }
@@ -191,22 +190,22 @@ function stand() {
   handvalue.player = calculateHandValue(carddeck.player);
   handvalue.dealer = calculateHandValue(carddeck.dealer);
   while (handvalue.dealer.hard < 17) {
-    renderDealerHitCards();
+    displayDealerHitCards();
   }
   if (
     handvalue.dealer.hard > 21 ||
     handvalue.player.hard > handvalue.dealer.hard
   ) {
-    renderDealerFaceDownCard();
+    displayDealerSecondCard();
     payOut();
-    renderResultsMessage(messages.win);
+    displayResultsMessage(messages.win);
   } else if (handvalue.player.hard < handvalue.dealer.hard) {
-    renderDealerFaceDownCard();
-    renderResultsMessage(messages.lose);
+    displayDealerSecondCard();
+    displayResultsMessage(messages.lose);
   } else if (handvalue.player.hard === handvalue.dealer.hard) {
-    renderDealerFaceDownCard();
+    displayDealerSecondCard();
     payOut();
-    renderResultsMessage(messages.push);
+    displayResultsMessage(messages.push);
   }
 }
 
@@ -214,13 +213,13 @@ function double() {
   handvalue.player = calculateHandValue(carddeck.player);
   if (carddeck.player.length === 2 && handvalue.player.hard < 21) {
     displayDoubleBetChip();
-    renderPlayerHitCards();
+    displayPlayerHitCards();
     hideInGameButtons();
 
     setTimeout(
       handvalue.player.hard <= 21
         ? stand
-        : () => renderResultsMessage(messages.lose),
+        : () => displayResultsMessage(messages.lose),
       800
     );
   }
@@ -252,7 +251,7 @@ function displayDepositField(visibility) {
   depositEl.button.style.visibility = visibility;
 }
 
-function displayBetAmt(visibility, display) {
+function displayBetChipUI(visibility, display) {
   betEl.betAmt.style.visibility = visibility;
   betEl.double.style.display = display;
 }
@@ -282,7 +281,7 @@ function hideChips(str) {
   chipEl.style.display = str;
 }
 
-function renderBankroll(amount) {
+function displayBankroll(amount) {
   stakes.bankroll += amount;
   depositEl.bankroll.textContent = `$${stakes.bankroll}`;
 }
@@ -304,32 +303,31 @@ function createTempMsg(message) {
 
 function inputBet(amount) {
   stakes.betAmt += amount; //betAmt is my cumulative from chipamt
-  renderBetAmount();
-  renderBankroll(-amount);
+  renderBetAmt();
+  displayBankroll(-amount);
 }
 
-function renderBetAmount() {
+function renderBetAmt() {
   stakes.betAmt === 0
     ? (betEl.betAmt.style.visibility = "hidden")
     : (betEl.betAmt.style.visibility = "visible"),
     (betEl.betAmt.textContent = `$${stakes.betAmt}`);
 }
 
-function renderPlayerHand() {
+function displayPlayerHand() {
   buildShuffledShoe();
-  dealCards();
-  // can put below as updatedeckincontainers but not intuitive
-  renderInitialCards(carddeck.shoe, deckEl.shuffled);
+  addCardsToHand();
+  renderBackBlueCards(carddeck.shoe, deckEl.shuffled);
   addClassToShuffledDeck();
-  renderInitialCards(carddeck.player, deckEl.player);
+  renderBackBlueCards(carddeck.player, deckEl.player);
   renderFaceCard(carddeck.player, deckEl.player);
-  renderHandCount(carddeck.player, stateEl.playerCount, deckEl.player);
+  displayHandCount(carddeck.player, stateEl.playerCount, deckEl.player);
 }
 
-function renderHalfDealerHand() {
-  renderInitialCards(carddeck.dealer, deckEl.dealer);
+function displayDealerFirstCard() {
+  renderBackBlueCards(carddeck.dealer, deckEl.dealer);
   renderFaceCard([carddeck.dealer[0]], deckEl.dealer);
-  renderHandCount(carddeck.dealer, stateEl.dealerCount, deckEl.dealer);
+  displayHandCount(carddeck.dealer, stateEl.dealerCount, deckEl.dealer);
 }
 
 // https://replit.com/@SEIStudent/How-to-Use-CSS-Card-Library#js/main.js
@@ -355,12 +353,12 @@ function buildShuffledShoe() {
   return carddeck.shoe;
 }
 
-function dealCards() {
+function addCardsToHand() {
   carddeck.player = [carddeck.shoe.shift(), carddeck.shoe.shift()];
   carddeck.dealer = [carddeck.shoe.shift(), carddeck.shoe.shift()];
 }
 
-function renderInitialCards(deck, container) {
+function renderBackBlueCards(deck, container) {
   container.innerHTML = "";
   let cardsHtml = "";
   deck.forEach(function () {
@@ -399,20 +397,17 @@ function displayBlackjack() {
   handvalue.dealer = calculateHandValue(carddeck.dealer);
 
   if (handvalue.player.hard === 21 && handvalue.dealer.hard === 21) {
-    renderFaceCard(carddeck.dealer, deckEl.dealer);
-    renderHandCount(carddeck.dealer, stateEl.dealerCount, deckEl.dealer);
+    displayDealerSecondCard();
     payOut();
-    renderResultsMessage(messages.push);
+    displayResultsMessage(messages.push);
   } else if (handvalue.player.hard === 21) {
     gamestate.playerblackjack = true;
-    // renderFaceCard(carddeck.dealer, deckEl.dealer);
-    renderHandCount(carddeck.player, stateEl.playerCount, deckEl.player);
+    // displayDealerSecondCard();
     payOut();
-    renderResultsMessage(messages.pbj);
+    displayResultsMessage(messages.pbj);
   } else if (handvalue.dealer.hard === 21) {
-    renderFaceCard(carddeck.dealer, deckEl.dealer);
-    renderHandCount(carddeck.dealer, stateEl.dealerCount, deckEl.dealer);
-    renderResultsMessage(messages.dbj);
+    displayDealerSecondCard();
+    displayResultsMessage(messages.dbj);
   }
 }
 
@@ -421,28 +416,28 @@ function hitCards(hand) {
   hand.push(newCard);
 }
 
-function renderPlayerHitCards() {
+function displayPlayerHitCards() {
   hitCards(carddeck.player);
   updateHandAfterHit(carddeck.player, deckEl.player);
   handvalue.player = calculateHandValue(carddeck.player);
-  renderHandCount(carddeck.player, stateEl.playerCount, deckEl.player);
+  displayHandCount(carddeck.player, stateEl.playerCount, deckEl.player);
 }
 
-function renderDealerHitCards() {
+function displayDealerHitCards() {
   hitCards(carddeck.dealer);
   updateHandAfterHit(carddeck.dealer, deckEl.dealer);
   handvalue.dealer = calculateHandValue(carddeck.dealer);
-  renderHandCount(carddeck.dealer, stateEl.dealerCount, deckEl.dealer);
+  displayHandCount(carddeck.dealer, stateEl.dealerCount, deckEl.dealer);
 }
 
-function renderDealerFaceDownCard() {
+function displayDealerSecondCard() {
   renderFaceCard(carddeck.dealer, deckEl.dealer);
-  renderHandCount(carddeck.dealer, stateEl.dealerCount, deckEl.dealer);
+  displayHandCount(carddeck.dealer, stateEl.dealerCount, deckEl.dealer);
 }
 
 function updateHandAfterHit(deck, container) {
-  renderInitialCards(deck, container);
-  renderInitialCards(carddeck.shoe, deckEl.shuffled);
+  renderBackBlueCards(deck, container);
+  renderBackBlueCards(carddeck.shoe, deckEl.shuffled);
   addClassToShuffledDeck();
   renderFaceCard(deck, container);
 }
@@ -454,7 +449,7 @@ function addClassToShuffledDeck() {
   });
 }
 
-function renderDblBetAmount(amount) {
+function renderDblBetAmt(amount) {
   stakes.betAmt === 0
     ? (betEl.double.style.display = "none")
     : (betEl.double.style.display = "flex"),
@@ -464,8 +459,8 @@ function renderDblBetAmount(amount) {
 function displayDoubleBetChip() {
   stakes.betAmt = stakes.betAmt * 2;
   betEl.double.textContent = `$${stakes.initialBetAmt}`;
-  renderDblBetAmount(stakes.initialBetAmt);
-  renderBankroll(-stakes.initialBetAmt);
+  renderDblBetAmt(stakes.initialBetAmt);
+  displayBankroll(-stakes.initialBetAmt);
 }
 
 function calculateHandValue(hand) {
@@ -490,16 +485,15 @@ function calculateHandValue(hand) {
   return { soft, hard };
 }
 
-function renderHandCount(hand, count, container) {
+function displayHandCount(hand, count, container) {
   const { soft, hard } = calculateHandValue(hand);
-  const numOfAce = hand.filter((card) => card.value === 11).length;
-  const checkIfBackClass = container.querySelectorAll(".back-blue").length > 0;
+  const backBlueClass = container.querySelectorAll(".back-blue").length > 0;
 
-  if (numOfAce === 1 && hand.length === 2 && hard === 21) {
+  if (hand.length === 2 && hard === 21) {
     count.textContent = messages.defaultbj;
-  } else if (checkIfBackClass) {
+  } else if (backBlueClass) {
     count.textContent = hand[0].value;
-  } else if (numOfAce >= 1 && soft <= 11 && soft !== hard) {
+  } else if (soft <= 11 && soft !== hard) {
     count.textContent = `${soft} / ${hard}`;
   } else {
     count.textContent = hard;
@@ -517,7 +511,7 @@ function payOut() {
   } else {
     wonAmount = stakes.betAmt * 2;
   }
-  renderBankroll(wonAmount);
+  displayBankroll(wonAmount);
   return (messages.profits = wonAmount);
 }
 
@@ -534,17 +528,11 @@ function saveBankrollInLocalStorage() {
   localStorage.setItem("stakes.bankroll", stakes.bankroll);
 }
 
-function renderResultsMessage(message) {
+function displayResultsMessage(message) {
   const result = message + messages.profits;
   gamestate.gameover = true;
-  styleResults(result);
-  handleGameOver();
-}
-
-function styleResults(result) {
   stateEl.results.textContent = result;
-  stateEl.results.style.color = "white";
-  stateEl.results.style.backgroundColor = "black";
+  handleGameOver();
 }
 
 function clearPage() {
@@ -569,9 +557,10 @@ function clearPage() {
 
 // function dealBlackjack(deck, count, container) {
 //   const specificCards = getSpecificCards();
-//   // https://stackoverflow.com/questions/1348178/a-better-way-to-splice-an-array-into-an-array-in-javascript -> mutate original array
 //   deck.splice(0, deck.length, ...specificCards);
-//   renderInitialCards(deck, container);
+//   renderBackBlueCards(deck, container);
 //   renderFaceCard(deck, container);
-//   renderHandCount(deck, count, container);
+//   displayHandCount(deck, count, container);
 // }
+
+// https://stackoverflow.com/questions/1348178/a-better-way-to-splice-an-array-into-an-array-in-javascript -> mutate original array

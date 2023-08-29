@@ -12,7 +12,7 @@
 
 ## Description
 
-Blackjack is a widely popular card game enjoyed worldwide. In the realm of casinos, it stands out as a game with the lowest house edge, making it a favorite among players. For my inaugural project, I chose to recreate this classic game, aiming to provide a platform for newcomers to refine their card-counting skills and master the fundamental strategy.
+Blackjack is a widely popular card game. In the realm of casinos, it stands out as a game with the lowest house edge, making it a favorite among players. I chose to recreate this classic game, aiming to provide a platform for beginners to practise their card-counting skills and master the basic strategy.
 
 The objective of this game is to outscore the dealer by obtaining a hand value as close to 21 as possible without exceeding it. In this implementation, a single deck is used, and features such as splitting or insurance are not yet incorporated.
 
@@ -37,7 +37,7 @@ The objective of this game is to outscore the dealer by obtaining a hand value a
    Once the player decides to "STAND", the dealer will reveal the hole card. The dealer must draw cards to obtain a hand value of at least 17, not exceeding 21. If the dealer's hand value exceeds 21, the player will be declared the winner and will be paid accordingly.
 
 7. Results:
-   The dealer's hand value will be compared against the player's hand value. If the player's hand value is greater than the dealer's hand value, the player will be declared the winner and will receive the corresponding payout. In case both hands have equal values, the game will end in a draw and the player will have their original bet amount returned.
+   The dealer's hand value will be compared against the player's hand value. If the player's hand value is greater than the dealer's hand value, the player will be declared the winner and will receive the appropriate payout. In case both hands have equal values, the game will end in a draw and the player will have their original bet amount returned.
 
 8. Payout:
    All winning bets are paid even money (1 to 1), except for Blackjack, which pays one-and-a-half times the bet (3 to 2).
@@ -70,17 +70,17 @@ https://blackjack-game-project.vercel.app/
 
 ## Next Steps
 
-- Introduce Splitting and Insurance features to replicate the authentic casino environment of Blackjack games.
+- Introduce Splitting and Insurance features.
 
-- Expand the deck count to 6-8 decks and allow for multiple hands/players. These features will create an ideal environment for players to hone their card counting strategies.
+- Expand the deck count to 6-8 decks and allow for multiple hands/players.
 
 - Enhance the gaming experience with audio effects.
 
-- Incorporate a card counter feature to facilitate practice in card counting techniques.
+- Include a card counter feature to facilitate practice in card counting techniques.
 
-- Provide a Basic Strategy chart as a Modal for reference. Alternatively, automate the execution of the basic strategies.
+- Provide a Basic Strategy chart as a Modal for reference. Alternatively, automate the execution of the basic strategy.
 
-- Adjust the player odds of winning to discourage excessive gambling.
+- Decrease the player odds of winning to discourage excessive gambling.
 
 ## Credit Resources
 
