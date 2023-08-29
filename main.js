@@ -16,15 +16,17 @@ const ranks = [
   "A",
 ];
 const messages = {
+  undo: "Your undo too high la! Try clear bet.",
+  unable: "Don't play, no bet how to clear?",
   win: "Nice 🥳 You won $",
   lose: "Sian 😢",
   push: "Heng ah 🤓 You got back your $",
   pbj: "Swee 🤪 You won $",
   dbj: "Damn Sian 😭",
-  invalid: "Invalid amount! Try again!",
-  insufficient: "Insufficient funds in your bankroll!",
+  invalid: "Put number la! $5 - $1000 take your pick.",
+  insufficient: "Oi! No money still want bet so big!",
   defaultbj: "Blackjack 2️⃣1️⃣",
-  defaultdeal: "Please place your bet.",
+  defaultdeal: "Eh bro and sis, place bet leh!",
 };
 
 /*----- app's state (variables) -----*/
@@ -104,7 +106,8 @@ function deposit() {
     renderBankroll(depositValue);
     depositEl.input.value = "";
   } else {
-    renderInvalidInputMessage();
+    depositEl.input.value = "";
+    displayErrorMessage(messages.invalid);
   }
 }
 
@@ -117,47 +120,39 @@ function depositWithEnterKey(e) {
 
 function bet(e) {
   //https://gomakethings.com/listening-for-events-on-multiple-elements-using-javascript-event-delegation
-  if (gamestate.dealingNow) {
-    return;
-  } else if (e.target.matches(".bet-input")) {
+  if (e.target.matches(".bet-input")) {
     stakes.chipAmt = parseInt(e.target.value);
     //e.target.value returns a string -> console.log(typeof e.target.value)
     if (stakes.chipAmt <= stakes.bankroll) {
       inputBet(stakes.chipAmt);
     } else {
-      renderInvalidBetMessage();
+      displayErrorMessage(messages.insufficient);
     }
   }
 }
 
 function undoBet() {
-  if (gamestate.dealingNow) {
-    return;
-  }
-  if (stakes.chipAmt <= stakes.betAmt) {
+  if (stakes.betAmt === 0) {
+    displayErrorMessage(messages.unable);
+  } else if (stakes.chipAmt > stakes.betAmt) {
+    displayErrorMessage(messages.undo);
+  } else {
     inputBet(-stakes.chipAmt);
   }
 }
 
 function clearBet() {
-  if (gamestate.dealingNow) {
-    return;
-  }
-  inputBet(-stakes.betAmt);
+  stakes.betAmt > 0
+    ? inputBet(-stakes.betAmt)
+    : displayErrorMessage(messages.unable);
 }
 
 function repeatBet() {
-  if (gamestate.dealingNow) {
-    return;
-  } else if (
-    stakes.bankroll >= stakes.initialBetAmt &&
-    stakes.initialBetAmt > 0
-  ) {
-    clearBet();
+  if (stakes.bankroll >= stakes.initialBetAmt && stakes.initialBetAmt > 0) {
     inputBet(stakes.initialBetAmt);
     deal();
   } else {
-    renderInvalidBetMessage();
+    displayErrorMessage(messages.insufficient);
   }
 }
 
@@ -166,14 +161,13 @@ function deal() {
     displayErrorMessage(messages.defaultdeal);
     return;
   }
-  gamestate.dealingNow = true;
   stakes.initialBetAmt = stakes.betAmt;
   displayPreGameBtns(true, "none");
   displayDepositField("hidden");
   renderPlayerHand();
-  // dealPlayerBlackjack();
+  // dealBlackjack(carddeck.player, stateEl.playerCount, deckEl.player);
   renderHalfDealerHand();
-  // dealDealerBlackjack();
+  // dealBlackjack(carddeck.dealer, stateEl.dealerCount, deckEl.dealer);
   displayInGameBtns();
   displayBlackjack();
 }
@@ -223,11 +217,12 @@ function double() {
     renderPlayerHitCards();
     hideInGameButtons();
 
-    if (handvalue.player.hard <= 21) {
-      setTimeout(stand, 800);
-    } else if (handvalue.player.hard > 21) {
-      setTimeout(() => renderResultsMessage(messages.lose), 800);
-    }
+    setTimeout(
+      handvalue.player.hard <= 21
+        ? stand
+        : () => renderResultsMessage(messages.lose),
+      800
+    );
   }
 }
 
@@ -237,7 +232,6 @@ function initialiseGameStates() {
   carddeck.player = [];
   carddeck.dealer = [];
   carddeck.shoe = [];
-  gamestate.dealingNow = false;
   gamestate.playerblackjack = false;
   messages.profits = "";
   stakes.betAmt = 0;
@@ -278,11 +272,9 @@ function displayPreGameBtns(bool, str) {
   betEl.clearBtn.style.display = str;
   betEl.dealBtn.style.display = str;
   hideChips(str);
-  if (stakes.initialBetAmt !== 0) {
-    betEl.repeatBtn.style.display = str;
-  } else {
-    betEl.repeatBtn.style.display = "none";
-  }
+  stakes.initialBetAmt !== 0
+    ? (betEl.repeatBtn.style.display = str)
+    : (betEl.repeatBtn.style.display = "none");
 }
 
 function hideChips(str) {
@@ -295,17 +287,9 @@ function renderBankroll(amount) {
   depositEl.bankroll.textContent = `$${stakes.bankroll}`;
 }
 
-function renderInvalidInputMessage() {
-  depositEl.input.value = "";
-  displayErrorMessage(messages.invalid);
-}
-
 function displayErrorMessage(message) {
   const errorMessageExist = document.querySelector(".error-message");
-
-  if (errorMessageExist) {
-    return;
-  }
+  if (errorMessageExist) return;
   createTempMsg(message);
 }
 
@@ -325,31 +309,25 @@ function inputBet(amount) {
 }
 
 function renderBetAmount() {
-  if (stakes.betAmt === 0) {
-    betEl.betAmt.style.visibility = "hidden";
-  } else {
-    betEl.betAmt.style.visibility = "visible";
-    betEl.betAmt.textContent = `$${stakes.betAmt}`;
-  }
-}
-
-function renderInvalidBetMessage() {
-  displayErrorMessage(messages.insufficient);
+  stakes.betAmt === 0
+    ? (betEl.betAmt.style.visibility = "hidden")
+    : (betEl.betAmt.style.visibility = "visible"),
+    (betEl.betAmt.textContent = `$${stakes.betAmt}`);
 }
 
 function renderPlayerHand() {
   buildShuffledShoe();
   dealCards();
   // can put below as updatedeckincontainers but not intuitive
-  putCardsIntoContainer(carddeck.shoe, deckEl.shuffled);
+  renderInitialCards(carddeck.shoe, deckEl.shuffled);
   addClassToShuffledDeck();
-  putCardsIntoContainer(carddeck.player, deckEl.player);
+  renderInitialCards(carddeck.player, deckEl.player);
   renderFaceCard(carddeck.player, deckEl.player);
   renderHandCount(carddeck.player, stateEl.playerCount, deckEl.player);
 }
 
 function renderHalfDealerHand() {
-  putCardsIntoContainer(carddeck.dealer, deckEl.dealer);
+  renderInitialCards(carddeck.dealer, deckEl.dealer);
   renderFaceCard([carddeck.dealer[0]], deckEl.dealer);
   renderHandCount(carddeck.dealer, stateEl.dealerCount, deckEl.dealer);
 }
@@ -382,7 +360,7 @@ function dealCards() {
   carddeck.dealer = [carddeck.shoe.shift(), carddeck.shoe.shift()];
 }
 
-function putCardsIntoContainer(deck, container) {
+function renderInitialCards(deck, container) {
   container.innerHTML = "";
   let cardsHtml = "";
   deck.forEach(function () {
@@ -463,8 +441,8 @@ function renderDealerFaceDownCard() {
 }
 
 function updateHandAfterHit(deck, container) {
-  putCardsIntoContainer(deck, container);
-  putCardsIntoContainer(carddeck.shoe, deckEl.shuffled);
+  renderInitialCards(deck, container);
+  renderInitialCards(carddeck.shoe, deckEl.shuffled);
   addClassToShuffledDeck();
   renderFaceCard(deck, container);
 }
@@ -477,12 +455,10 @@ function addClassToShuffledDeck() {
 }
 
 function renderDblBetAmount(amount) {
-  if (stakes.betAmt === 0) {
-    betEl.double.style.display = "none";
-  } else {
-    betEl.double.style.display = "flex";
-    betEl.double.textContent = `$${amount}`;
-  }
+  stakes.betAmt === 0
+    ? (betEl.double.style.display = "none")
+    : (betEl.double.style.display = "flex"),
+    (betEl.double.textContent = `$${amount}`);
 }
 
 function displayDoubleBetChip() {
@@ -571,41 +547,31 @@ function styleResults(result) {
   stateEl.results.style.backgroundColor = "black";
 }
 
-function removeResultMessage() {
-  stateEl.results.textContent = "";
-}
-
 function clearPage() {
   deckEl.player.innerHTML = "";
   deckEl.dealer.innerHTML = "";
   deckEl.shuffled.innerHTML = "";
   stateEl.playerCount.textContent = "";
   stateEl.dealerCount.textContent = "";
-  removeResultMessage();
+  stateEl.results.textContent = "";
 }
 
 // ==========Get Blackjack Test==========
-// function getBlackjackCards() {
+// function getSpecificCards() {
 //   const card1 = carddeck.shoe.find((card) => {
 //     return card.value === 11;
 //   });
 //   const card2 = carddeck.shoe.find((card) => {
 //     return card.value === 10;
 //   });
-//   // return (carddeck.dealer = [card1, card2]);
-//   return (carddeck.player = [card1, card2]);
+//   return [card1, card2];
 // }
 
-// function dealPlayerBlackjack() {
-//   getBlackjackCards();
-//   putCardsIntoContainer(carddeck.player, deckEl.player);
-//   renderFaceCard(carddeck.player, deckEl.player);
-//   renderHandCount(carddeck.player, stateEl.playerCount, deckEl.player);
-// }
-
-// function dealDealerBlackjack() {
-//   getBlackjackCards();
-//   putCardsIntoContainer(carddeck.dealer, deckEl.dealer);
-//   renderFaceCard(carddeck.dealer, deckEl.dealer);
-//   renderHandCount(carddeck.dealer, stateEl.dealerCount, deckEl.dealer);
+// function dealBlackjack(deck, count, container) {
+//   const specificCards = getSpecificCards();
+//   // https://stackoverflow.com/questions/1348178/a-better-way-to-splice-an-array-into-an-array-in-javascript -> mutate original array
+//   deck.splice(0, deck.length, ...specificCards);
+//   renderInitialCards(deck, container);
+//   renderFaceCard(deck, container);
+//   renderHandCount(deck, count, container);
 // }
