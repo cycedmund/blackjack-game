@@ -67,7 +67,7 @@ h3 {
 }
 
 .count {
-  color: #020146;
+  color: #0d07bb;
   font-size: 22px;
   text-align: center;
   padding: 0;
@@ -83,8 +83,8 @@ h3 {
   flex-direction: row-reverse;
   justify-content: flex-start;
   position: absolute;
-  top: 250px;
-  right: 150px;
+  top: 200px;
+  right: 100px;
 }
 
 .play-button-wrapper {
@@ -104,8 +104,6 @@ h3 {
   flex-direction: column;
   justify-content: center;
   align-items: center;
-  margin-top: 10px;
-  padding: 10px;
 }
 
 .desposit-input {
@@ -117,7 +115,7 @@ h3 {
   display: inline-block;
   vertical-align: middle;
   height: 30px;
-  width: 300px;
+  width: 260px;
   color: rgb(36, 35, 42);
   font-size: 15px;
   line-height: 20px;
@@ -133,7 +131,7 @@ h3 {
   transition: all 0.1s ease 0s;
   position: absolute;
   left: 10px;
-  bottom: 50px;
+  bottom: 55px;
 }
 
 #deposit-input:focus {
@@ -148,8 +146,8 @@ h3 {
   color: white;
   background: rgba(215, 234, 221, 0.557);
   position: absolute;
-  left: 310px;
-  bottom: 50px;
+  left: 270px;
+  bottom: 55px;
 }
 
 .chip-field {
@@ -207,14 +205,18 @@ h3 {
   align-items: center;
 }
 
+.bet-amount-wrapper {
+  display: flex;
+}
+
 .bankroll-amount {
-  font-size: 22px;
+  font-size: 25px;
   position: absolute;
-  border: 10px ridge rgba(18, 18, 18, 0.183);
+  border: 5px ridge rgba(18, 18, 18, 0.183);
   background-color: rgba(29, 35, 31, 0.557);
   color: white;
   left: 10px;
-  bottom: 0px;
+  bottom: 10px;
 }
 
 /* CSS : https://getcssscan.com/css-buttons-examples */
@@ -272,5 +274,3 @@ h3 {
   box-shadow: #d6d6e7 0 3px 7px inset;
   transform: translateY(2px);
 }
-
-/* https://copy-paste-css.com/form-input-text */

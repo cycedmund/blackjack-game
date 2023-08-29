@@ -84,7 +84,7 @@ gameEl.hit.addEventListener("click", hit);
 gameEl.stand.addEventListener("click", stand);
 gameEl.double.addEventListener("click", double);
 
-// Initialise/Start the game
+/*----- start game -----*/
 init();
 
 /*----- main function -----*/
@@ -100,8 +100,7 @@ function init() {
 /*----- event listener functions -----*/
 function deposit() {
   const depositValue = parseInt(depositEl.input.value);
-  //The parseInt function converts its first argument to a string, parses that string, then returns an integer or NaN . If not NaN , the return value will be the integer that is the first argument taken as a number in the specified radix
-  if (!isNaN(depositValue) && depositValue >= 5) {
+  if (!isNaN(depositValue) && depositValue >= 5 && depositValue <= 1000) {
     renderBankroll(depositValue);
     depositEl.input.value = "";
   } else {
@@ -172,8 +171,9 @@ function deal() {
   displayPreGameBtns(true, "none");
   displayDepositField("hidden");
   renderPlayerHand();
-  // dealBlackjack();
+  // dealPlayerBlackjack();
   renderHalfDealerHand();
+  // dealDealerBlackjack();
   displayInGameBtns();
   displayBlackjack();
 }
@@ -219,9 +219,9 @@ function stand() {
 function double() {
   handvalue.player = calculateHandValue(carddeck.player);
   if (carddeck.player.length === 2 && handvalue.player.hard < 21) {
-    doubleBet();
+    displayDoubleBetChip();
     renderPlayerHitCards();
-    gameEl.double.disabled = true;
+    hideInGameButtons();
 
     if (handvalue.player.hard <= 21) {
       setTimeout(stand, 800);
@@ -319,7 +319,7 @@ function createTempMsg(message) {
 }
 
 function inputBet(amount) {
-  stakes.betAmt += amount; //stakes.betAmt is my cumulative from chipamt
+  stakes.betAmt += amount; //betAmt is my cumulative from chipamt
   renderBetAmount();
   renderBankroll(-amount);
 }
@@ -354,15 +354,13 @@ function renderHalfDealerHand() {
   renderHandCount(carddeck.dealer, stateEl.dealerCount, deckEl.dealer);
 }
 
+// https://replit.com/@SEIStudent/How-to-Use-CSS-Card-Library#js/main.js
 function buildMainDeck() {
   const mainDeck = [];
-  // Use nested forEach to generate card objects
   suits.forEach(function (suit) {
     ranks.forEach(function (rank) {
       mainDeck.push({
-        // The 'face' property maps to the library's CSS classes for cards
         face: `${suit}${rank}`,
-        // Setting the 'value' property for game of displayBlackjack, not war
         value: Number(rank) || (rank === "A" ? 11 : 10),
       });
     });
@@ -374,7 +372,6 @@ function buildShuffledShoe() {
   const mainDeck = buildMainDeck();
   while (mainDeck.length) {
     const rndIdx = Math.floor(Math.random() * mainDeck.length);
-    // Note the [0] after splice - this is because splice always returns an array and we just want the card object in that array
     carddeck.shoe.push(mainDeck.splice(rndIdx, 1)[0]);
   }
   return carddeck.shoe;
@@ -488,7 +485,7 @@ function renderDblBetAmount(amount) {
   }
 }
 
-function doubleBet() {
+function displayDoubleBetChip() {
   stakes.betAmt = stakes.betAmt * 2;
   betEl.double.textContent = `$${stakes.initialBetAmt}`;
   renderDblBetAmount(stakes.initialBetAmt);
@@ -589,45 +586,26 @@ function clearPage() {
 
 // ==========Get Blackjack Test==========
 // function getBlackjackCards() {
-//   // const getCards = deckEl.shuffled.querySelectorAll(".card");
-//   // const myCards = [...getCards];
 //   const card1 = carddeck.shoe.find((card) => {
 //     return card.value === 11;
 //   });
 //   const card2 = carddeck.shoe.find((card) => {
 //     return card.value === 10;
 //   });
+//   // return (carddeck.dealer = [card1, card2]);
 //   return (carddeck.player = [card1, card2]);
 // }
 
-// function dealBlackjack() {
+// function dealPlayerBlackjack() {
 //   getBlackjackCards();
 //   putCardsIntoContainer(carddeck.player, deckEl.player);
 //   renderFaceCard(carddeck.player, deckEl.player);
 //   renderHandCount(carddeck.player, stateEl.playerCount, deckEl.player);
 // }
 
-//==========NEED TO DO
-
-// need a new game function
-// insurance??
-//credit jim Clark
-
-//set time delay for dealing of cards?
-
-//if got time, go and add more decks -> use the same decks and move unti no decks left
-// or add more players
-
-//set timer to bet?
-//dont use multiple of 5? because like that 5 will get 0.5..
-
-//can use function expression for playervalue etc where i need the value
-
-//bugs
-//1. repeat bet -> cannot press undo/clear else repeat bet cannot work -> solved
-// - save the initialbetamount in deal() -> can use it to access
-//2. print error message -> can keep printing if keep spamming -> solve
-//3. prevent deposit input from refreshing when pressing enter -> solve
-// - need create another event listener
-//4. include soft and hard count -> solve
-// - edited renderhandcount and calculate hand value
+// function dealDealerBlackjack() {
+//   getBlackjackCards();
+//   putCardsIntoContainer(carddeck.dealer, deckEl.dealer);
+//   renderFaceCard(carddeck.dealer, deckEl.dealer);
+//   renderHandCount(carddeck.dealer, stateEl.dealerCount, deckEl.dealer);
+// }
