@@ -18,21 +18,32 @@ The goal of the game is to beat the dealer by having a hand value as close to 21
 
 ## How To Play
 
-1. Gameplay: The game involves the player competing against the dealer. The player is dealt two cards face up, and the dealer is dealt one card face up and one card face down (the hole card).
+1. Gameplay:
+   The game involves the player competing against the dealer. The player is dealt two cards face up, and the dealer is dealt one card face up and one card face down (the hole card).
 
-2. Hand Value: Each card has a value. Number cards are worth their face value, face cards (Jacks, Queens, Kings) are worth 10, and Aces can be worth 1 or 11, depending on which value benefits the player.
+2. Hand Value:
+   Each card has a value. Number cards are worth their face value, face cards (Jacks, Queens, Kings) are worth 10, and Aces can be worth 1 or 11, depending on which value benefits the player.
 
-3. Pre-Game: The player is given $500 at the start of the game, and can choose to deposit more money(any amount between $5 and $1000 inclusive). The player must place a bet (with the chips) before starting the round (with the "DEAL" button).
+3. Pre-Game:
+   The player is given $500 at the start of the game, and can choose to deposit more money(any amount between $5 and $1000 inclusive). The player must place a bet (with the chips) before starting the round (with the "DEAL" button).
 
-4. Determine Blackjack: After the cards are dealt, the hand value for the player and dealer is calculated to determine if there is any blackjack. If either the player or dealer is dealt a blackjack, the game will end.
+4. Determine Blackjack:
+   After the cards are dealt, the hand value for the player and dealer is calculated to determine if there is any blackjack. If either the player or dealer is dealt a blackjack, the game will end.
 
-5. Player's Turn: The player can choose to draw another card (with the "HIT" button) or keep the current hand (with the "STAND" button). The aim is to achieve a hand value as close to 21 as possible without exceeding it. If the hand value exceeds 21, the player will bust and the game will end with the dealer as the winner.
+5. Player's Turn:
+   The player can choose to draw another card (with the "HIT" button) or keep the current hand (with the "STAND" button). The aim is to achieve a hand value as close to 21 as possible without exceeding it. If the hand value exceeds 21, the player will bust and the game will end with the dealer as the winner.
 
-6. Dealer's Turn: Once the player decides to "STAND", the dealer will reveal the hole card. The dealer must draw cards to obtain a hand value of at least 17, not exceeding 21. If the dealer's hand value exceeds 21, the player will be declared the winner and will be paid accordingly.
+6. Dealer's Turn:
+   Once the player decides to "STAND", the dealer will reveal the hole card. The dealer must draw cards to obtain a hand value of at least 17, not exceeding 21. If the dealer's hand value exceeds 21, the player will be declared the winner and will be paid accordingly.
 
-7. Payout: All winning bets are paid even money (1 to 1), except for Blackjack, which pays one-and-a-half times the bet (3 to 2).
+7. Results:
+   Dealer's hand value will be compared against player's hand value. If player's hand value is higher than the dealer's hand value, the player will be declared the winner and will be rewarded accordingly. In the event of an equal hand value, the player will be returned his original bet amount.
 
-8. Other Rules: Player can only stand on a hand value of at least 12, but is able to double at any hand value on the initial two cards.
+8. Payout:
+   All winning bets are paid even money (1 to 1), except for Blackjack, which pays one-and-a-half times the bet (3 to 2).
+
+9. Other Rules:
+   Player can only stand on a hand value of at least 12, but is able to double at any hand value on the initial two cards.
 
 ## Screenshots
 
@@ -75,7 +86,7 @@ https://blackjack-game-project.vercel.app/
 
 ### Research
 
-1. **How To Play Blackjack**: Article on [Blackjack Apprenticeship](https://www.blackjackapprenticeship.com/how-to-play-blackjack/) and [Wikipedia](https://en.wikipedia.org/wiki/Blackjack#:~:text=A%20blackjack%20beats%20any%20hand,in%20single%2Ddeck%20blackjack%20games)
+1. **How To Play Blackjack**: Articles on [Blackjack Apprenticeship](https://www.blackjackapprenticeship.com/how-to-play-blackjack/) and [Wikipedia](https://en.wikipedia.org/wiki/Blackjack#:~:text=A%20blackjack%20beats%20any%20hand,in%20single%2Ddeck%20blackjack%20games)
 
 2. **MBS's Blackjack Rules**: PDF Document on [Gambling Regulatory Authority](https://www.gra.gov.sg/docs/default-source/game-rules/mbs/blackjack-pontoon-games/blackjack-pontoon---gra-website/mbs-blackjack-game-rules-version-63c8994ee-f3e8-4bfd-8398-dee76aa466ee.pdf)
 
@@ -102,3 +113,5 @@ https://blackjack-game-project.vercel.app/
 2. **Event Delegation's Multiple Events**: Article on [Go Make Things](https://gomakethings.com/listening-for-events-on-multiple-elements-using-javascript-event-delegation/)
 
 3. **Prevent Default Enter Key**: Tutorial on [StackDiary](https://stackdiary.com/tutorials/prevent-form-submission-on-pressing-enter-with-javascript/)
+
+4. **Implement Local Storage**: Article on [Tiny Blog](https://www.tiny.cloud/blog/javascript-localstorage/)
