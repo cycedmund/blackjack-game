@@ -2,13 +2,13 @@
 
 ## Table of Contents
 
-- [Description](##Description)
-- [How To Play](##How-To-Play)
-- [Screenshots](##Screenshots)
-- [Technologies Used](##Technologies-Used)
-- [Getting Started](##Getting-Started)
-- [Next Steps](##Next-Steps)
-- [Credit Resources](##Credit-Resources)
+- [Description](#Description)
+- [How To Play](#How-To-Play)
+- [Screenshots](#Screenshots)
+- [Technologies Used](#Technologies-Used)
+- [Getting Started](#Getting-Started)
+- [Next Steps](#Next-Steps)
+- [Credit Resources](#Credit-Resources)
 
 ## Description
 
