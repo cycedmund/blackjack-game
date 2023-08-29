@@ -193,7 +193,7 @@ h3 {
 
 .bet-amount {
   display: flex;
-  font-size: 12px;
+  font-size: 15px;
   height: 60px;
   width: 60px;
   border: 5px dashed rgb(196, 196, 7);

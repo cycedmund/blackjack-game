@@ -1,8 +1,8 @@
-# Developing a Blackjack game
+# Blackjack Game
 
 ## Description
 
-Blackjack is a card game that is widely popular across the globe. In casinos, it is recognised as a game that has the lowest house edge, which makes it a game that everyone turns to. I decided on this game because I would like to provide a platform for the seasoned players to hone their card counting and perfect their basic strategy.
+Blackjack is a card game that is widely popular across the globe. In casinos, it is recognised as a game that has the lowest house edge, which makes it a game that everyone turns to. I decided to recreate this game as my first project because I would like to provide a platform for the seasoned players to hone their card counting and perfect their basic strategy.
 
 The goal of the game is to beat the dealer by having a hand value as close to 21 as possible without going over. At the moment, this implementation of Blackjack features a single deck and does not allow splitting or insurance.
 
@@ -17,6 +17,10 @@ The goal of the game is to beat the dealer by having a hand value as close to 21
 4. Dealer's Turn: Once the player decides to "STAND", the dealer will reveal the hole card. The dealer must draw cards to obtain a hand value of at least 17, not exceeding 21. If the dealer's hand value exceeds 21, the player will be declared the winner and will be paid accordingly.
 
 5. Payout: All winning bets are paid even money (1 to 1), except for Blackjack, which pays you one-and-a-half times your bet or 3 to 2.
+
+## Rules
+
+1.
 
 ## Screenshot
 
