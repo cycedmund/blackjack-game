@@ -12,17 +12,40 @@
   width: 100%;
 
   /* Displayed under the container */
-  z-index: 1;
+  z-index: 0;
 
   /* Background and border colors */
   background-color: rgb(255, 255, 255);
   border: 1px solid #d1d5db;
+
+  transform: rotateZ(230deg);
 }
+
+.a1 {
+  z-index: 1;
+  left: 20px;
+}
+
+.a2 {
+  z-index: 2;
+  left: 15px;
+}
+
+.a3 {
+  z-index: 3;
+  left: 10px;
+}
+
+.a4 {
+  z-index: 4;
+  left: 5px;
+}
+
 .card {
   box-sizing: border-box;
   display: inline-block;
   margin: 5px;
-  cursor: pointer;
+  /* cursor: pointer; */
   /* Set the card's dimensions, and size it relative to
      it's font size. */
   font-size: inherit;

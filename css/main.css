@@ -93,8 +93,8 @@ h3 {
   flex-direction: row-reverse;
   justify-content: flex-start;
   position: absolute;
-  top: 200px;
-  right: 100px;
+  top: 100px;
+  right: 40px;
 }
 
 .play-button-wrapper {

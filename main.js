@@ -443,8 +443,11 @@ function renderHitCards(deck, container) {
 
 function addClassToShuffledDeck() {
   const cards = deckEl.shuffled.querySelectorAll(".card");
+  let num = 0;
   cards.forEach((div) => {
+    num++;
     div.classList.add("stack");
+    div.classList.add(`a${num}`);
   });
 }
 
