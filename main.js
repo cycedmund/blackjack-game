@@ -23,7 +23,7 @@ const messages = {
   push: "Heng ah 🤓 You got back your $",
   pbj: "Swee 🤪 You won $",
   dbj: "Damn Sian 😭",
-  invalid: "Put number la! $5 - $1000 take your pick.",
+  invalid: "Bopes can only add $100 - $1000",
   insufficient: "Oi! No money still want bet so big!",
   defaultbj: "BLACKJACK 2️⃣1️⃣",
   defaultdeal: "Eh bros and sises, place bet leh!",
@@ -93,7 +93,7 @@ init();
 function init() {
   initialiseGameStates();
   getBankrollFromLocalStorage();
-  displayDepositField("visible");
+  manageDepositField();
   displayChipBetImg("hidden", "none");
   hideInGameButtons();
   displayPreGameBtns(false, "flex");
@@ -102,9 +102,10 @@ function init() {
 /*----- event listener functions -----*/
 function deposit() {
   const depositValue = parseInt(depositEl.input.value);
-  if (!isNaN(depositValue) && depositValue >= 5 && depositValue <= 1000) {
+  if (depositValue >= 100 && depositValue <= 1000) {
     displayBankroll(depositValue);
-    depositEl.input.value = "";
+    saveBankrollInLocalStorage();
+    manageDepositField();
   } else {
     depositEl.input.value = "";
     displayErrorMessage(messages.invalid);
@@ -162,7 +163,7 @@ function deal() {
   }
   stakes.initialBetAmt = stakes.betAmt;
   displayPreGameBtns(true, "none");
-  displayDepositField("hidden");
+  showHideDepositField("hidden");
   displayPlayerHand();
   // dealBlackjack(carddeck.player, stateEl.playerCount, deckEl.player);
   displayDealerFirstCard();
@@ -244,8 +245,16 @@ function getBankrollFromLocalStorage() {
   }
 }
 
-function displayDepositField(visibility) {
-  depositEl.bankroll.textContent = `$${stakes.bankroll}`;
+function manageDepositField() {
+  if (stakes.bankroll <= 100) {
+    showHideDepositField("visible");
+  } else {
+    showHideDepositField("hidden");
+  }
+  depositEl.input.value = "";
+}
+
+function showHideDepositField(visibility) {
   depositEl.input.style.visibility = visibility;
   depositEl.button.style.visibility = visibility;
 }
