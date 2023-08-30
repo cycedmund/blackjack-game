@@ -65,8 +65,10 @@ The objective of this game is to outscore the dealer by obtaining a hand value a
 
 ## Getting Started
 
-The game is deployed on Vercel App, you can view and play the game here:
+The game is deployed on Vercel, you can view and play the game here:
 https://blackjack-game-project.vercel.app/
+
+Note: The optimal experience for playing the game is on computers. The images might not display correctly on phones or iPads.
 
 ## Next Steps
 
@@ -79,6 +81,8 @@ https://blackjack-game-project.vercel.app/
 - Include a card counter feature to facilitate practice in card counting techniques.
 
 - Provide a Basic Strategy chart as a Modal for reference. Alternatively, automate the execution of the basic strategy.
+
+- Include CSS Media queries to ensure the game works on different screen sizes.
 
 - Decrease the player odds of winning to discourage excessive gambling.
 
@@ -110,7 +114,7 @@ https://blackjack-game-project.vercel.app/
 
 1. **Build Deck and Shuffle Deck**: Jim Clark's CSS Card Library [main.js](https://replit.com/@SEIStudent/How-to-Use-CSS-Card-Library#js/main.js)
 
-2. **Event Delegation's Multiple Events**: Article on [Go Make Things](https://gomakethings.com/listening-for-events-on-multiple-elements-using-javascript-event-delegation/)
+2. **Matches() method**: Article on [Go Make Things](https://gomakethings.com/listening-for-events-on-multiple-elements-using-javascript-event-delegation/) and [Stackoverflow](https://stackoverflow.com/questions/58372977/what-is-the-difference-between-element-classlist-contains-and-element-matches)
 
 3. **Prevent Default Enter Key**: Tutorial on [StackDiary](https://stackdiary.com/tutorials/prevent-form-submission-on-pressing-enter-with-javascript/)
 

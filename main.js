@@ -16,7 +16,7 @@ const ranks = [
   "A",
 ];
 const messages = {
-  undo: "Your undo too high la! Try clear bet.",
+  undo: "Undo chip value too high la! Try clear bet.",
   unable: "Don't play, no bet how to clear?",
   win: "Nice 🥳 You won $",
   lose: "Sian 😢",
@@ -26,7 +26,7 @@ const messages = {
   invalid: "Put number la! $5 - $1000 take your pick.",
   insufficient: "Oi! No money still want bet so big!",
   defaultbj: "BLACKJACK 2️⃣1️⃣",
-  defaultdeal: "Eh bro and sis, place bet leh!",
+  defaultdeal: "Eh bros and sises, place bet leh!",
 };
 
 /*----- app's state (variables) -----*/
@@ -94,7 +94,7 @@ function init() {
   initialiseGameStates();
   getBankrollFromLocalStorage();
   displayDepositField("visible");
-  displayBetChipUI("hidden", "none");
+  displayChipBetImg("hidden", "none");
   hideInGameButtons();
   displayPreGameBtns(false, "flex");
 }
@@ -118,8 +118,8 @@ function depositWithEnterKey(e) {
   }
 }
 
+//https://stackoverflow.com/questions/58372977/what-is-the-difference-between-element-classlist-contains-and-element-matches
 function bet(e) {
-  //https://gomakethings.com/listening-for-events-on-multiple-elements-using-javascript-event-delegation
   if (e.target.matches(".bet-input")) {
     stakes.chipAmt = parseInt(e.target.value);
     if (stakes.chipAmt <= stakes.bankroll) {
@@ -216,12 +216,11 @@ function double() {
     displayPlayerHitCards();
     hideInGameButtons();
 
-    setTimeout(
-      handvalue.player.hard <= 21
-        ? stand
-        : () => displayResultsMessage(messages.lose),
-      800
-    );
+    if (handvalue.player.hard <= 21) {
+      stand();
+    } else {
+      displayResultsMessage(messages.lose);
+    }
   }
 }
 
@@ -251,7 +250,7 @@ function displayDepositField(visibility) {
   depositEl.button.style.visibility = visibility;
 }
 
-function displayBetChipUI(visibility, display) {
+function displayChipBetImg(visibility, display) {
   betEl.betAmt.style.visibility = visibility;
   betEl.double.style.display = display;
 }
@@ -289,10 +288,10 @@ function displayBankroll(amount) {
 function displayErrorMessage(message) {
   const errorMessageExist = document.querySelector(".error-message");
   if (errorMessageExist) return;
-  createTempMsg(message);
+  createErrorMsg(message);
 }
 
-function createTempMsg(message) {
+function createErrorMsg(message) {
   const newh1El = document.createElement("h1");
   newh1El.classList.add("error-message");
   newh1El.textContent = message;
@@ -368,14 +367,14 @@ function renderBackBlueCards(deck, container) {
 }
 
 function renderFaceCard(deck, container) {
-  const cards = container.querySelectorAll(".card");
-  cards.forEach((div, index) => {
+  const cardsDivEl = container.querySelectorAll(".card");
+  cardsDivEl.forEach((div, index) => {
     if (deck[index]) {
       div.classList.remove("back-blue");
       div.classList.add(`${deck[index].face}`);
     }
   });
-  return cards;
+  return cardsDivEl;
 }
 
 function displayInGameBtns() {
@@ -418,14 +417,14 @@ function hitCards(hand) {
 
 function displayPlayerHitCards() {
   hitCards(carddeck.player);
-  updateHandAfterHit(carddeck.player, deckEl.player);
+  renderHitCards(carddeck.player, deckEl.player);
   handvalue.player = calculateHandValue(carddeck.player);
   displayHandCount(carddeck.player, stateEl.playerCount, deckEl.player);
 }
 
 function displayDealerHitCards() {
   hitCards(carddeck.dealer);
-  updateHandAfterHit(carddeck.dealer, deckEl.dealer);
+  renderHitCards(carddeck.dealer, deckEl.dealer);
   handvalue.dealer = calculateHandValue(carddeck.dealer);
   displayHandCount(carddeck.dealer, stateEl.dealerCount, deckEl.dealer);
 }
@@ -435,7 +434,7 @@ function displayDealerSecondCard() {
   displayHandCount(carddeck.dealer, stateEl.dealerCount, deckEl.dealer);
 }
 
-function updateHandAfterHit(deck, container) {
+function renderHitCards(deck, container) {
   renderBackBlueCards(deck, container);
   renderBackBlueCards(carddeck.shoe, deckEl.shuffled);
   addClassToShuffledDeck();
